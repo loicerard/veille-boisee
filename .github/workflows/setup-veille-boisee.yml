@@ -1,0 +1,304 @@
+name: Setup Veille Boisee Labels, Milestones & Issues
+
+on:
+  push:
+    branches:
+      - 'claude/setup-github-issues-FQKVp'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+
+    steps:
+      - name: Create Labels
+        run: |
+          gh label create "epic"        --color "0075ca" --description "Epic de haut niveau"      --repo $REPO --force || true
+          gh label create "user-story"  --color "e4e669" --description "User story"               --repo $REPO --force || true
+          gh label create "bug"         --color "d73a4a" --description "Bug"                       --repo $REPO --force || true
+          gh label create "enhancement" --color "a2eeef" --description "Amélioration"             --repo $REPO --force || true
+          gh label create "cadastre"    --color "228B22" --description "Routing & Cadastre"        --repo $REPO --force || true
+          gh label create "auth"        --color "8B4513" --description "Authentification"          --repo $REPO --force || true
+          gh label create "signalement" --color "FF8C00" --description "Signalement citoyen"       --repo $REPO --force || true
+          gh label create "dashboard"   --color "4B0082" --description "Dashboard collectivité"    --repo $REPO --force || true
+          gh label create "rgpd"        --color "FF69B4" --description "Conformité RGPD"           --repo $REPO --force || true
+          echo "Labels créés"
+
+      - name: Create Milestones
+        run: |
+          gh api repos/$REPO/milestones --method POST \
+            --field title="Epic 1 — Routing & Cadastre" \
+            --field description="Déterminer automatiquement quelle entité notifier à partir des coordonnées GPS d'un signalement." \
+            2>/dev/null || true
+          gh api repos/$REPO/milestones --method POST \
+            --field title="Epic 2 — Authentification" \
+            --field description="Inscription, connexion, gestion du compte citoyen." \
+            2>/dev/null || true
+          gh api repos/$REPO/milestones --method POST \
+            --field title="Epic 3 — Signalement" \
+            --field description="Parcours citoyen de soumission et suivi des signalements." \
+            2>/dev/null || true
+          gh api repos/$REPO/milestones --method POST \
+            --field title="Epic 4 — Dashboard Collectivité" \
+            --field description="Interface de gestion des signalements pour les agents municipaux." \
+            2>/dev/null || true
+          echo "Milestones créées"
+
+      - name: Create Issue US-01
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** système, **je veux** interroger l'API Carto IGN à partir des coordonnées GPS d'un signalement, **afin de** récupérer la parcelle cadastrale concernée.
+
+          ## Critères d'acceptation
+          - [ ] Étant donné des coordonnées GPS valides, quand le signalement est soumis, alors l'API Carto retourne un numéro de parcelle, une section et un code commune
+          - [ ] Étant donné des coordonnées en dehors du territoire français, quand le signalement est soumis, alors une erreur explicite est retournée
+          - [ ] Étant donné une indisponibilité de l'API IGN, quand le signalement est soumis, alors le signalement est mis en file d'attente et le routing est retryé automatiquement
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-01 — Identifier la parcelle cadastrale" \
+            --label "user-story,cadastre" \
+            --milestone "Epic 1 — Routing & Cadastre" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-02
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** système, **je veux** croiser les coordonnées avec les couches géographiques disponibles, **afin de** déterminer si la zone est communale, domaniale (ONF), ou protégée (Natura 2000, parc national…).
+
+          ## Critères d'acceptation
+          - [ ] Étant donné une parcelle en forêt domaniale, alors le signalement est tagué `ONF`
+          - [ ] Étant donné une parcelle en zone Natura 2000, alors le signalement est tagué `zone_protégée` en complément de l'entité principale
+          - [ ] Étant donné une parcelle communale ordinaire, alors le signalement est tagué `commune`
+          - [ ] Un signalement peut avoir plusieurs tags cumulés
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-02 — Identifier le type de zone" \
+            --label "user-story,cadastre" \
+            --milestone "Epic 1 — Routing & Cadastre" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-03
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** système, **je veux** déterminer l'entité destinataire à partir du type de zone et du code commune, **afin d'** acheminer le signalement au bon interlocuteur.
+
+          ## Critères d'acceptation
+          - [ ] Étant donné un tag `commune`, alors le signalement est associé à la mairie correspondant au code INSEE
+          - [ ] Étant donné un tag `ONF`, alors le signalement est associé à l'agence ONF du secteur
+          - [ ] Étant donné une parcelle à cheval sur deux communes, alors le signalement est routé vers les deux entités
+          - [ ] La table de routing est administrable sans redéploiement (fichier de config ou table en base)
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-03 — Router vers la bonne entité" \
+            --label "user-story,cadastre" \
+            --milestone "Epic 1 — Routing & Cadastre" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-04
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** système, **je veux** détecter quand aucune entité connue ne correspond à la zone signalée, **afin de** ne pas perdre le signalement silencieusement.
+
+          ## Critères d'acceptation
+          - [ ] Étant donné une zone sans entité enregistrée, alors le signalement est conservé avec le statut `non_routé`
+          - [ ] L'administrateur est notifié des signalements `non_routés`
+          - [ ] L'utilisateur reçoit un message du type 'Votre signalement a bien été enregistré, nous identifions l'interlocuteur compétent'
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-04 — Gérer les zones non couvertes" \
+            --label "user-story,cadastre" \
+            --milestone "Epic 1 — Routing & Cadastre" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-05
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** citoyen, **je veux** m'inscrire via Google ou un réseau social, **afin de** pouvoir soumettre des signalements et recevoir des notifications.
+
+          ## Critères d'acceptation
+          - [ ] Étant donné un utilisateur non connecté, quand il clique sur 'S'inscrire', alors il peut choisir Google, Apple ou Facebook
+          - [ ] Seul un identifiant OAuth anonymisé et un token push sont stockés
+          - [ ] Aucun nom, email ou donnée personnelle n'est conservé en clair
+          - [ ] L'inscription est possible en moins de 3 clics
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-05 — Créer un compte" \
+            --label "user-story,auth,rgpd" \
+            --milestone "Epic 2 — Authentification" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-06
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** citoyen inscrit, **je veux** me reconnecter via mon provider OAuth, **afin de** retrouver mes signalements et notifications.
+
+          ## Critères d'acceptation
+          - [ ] Étant donné un utilisateur déjà inscrit, quand il se reconnecte avec le même provider, alors il retrouve son historique
+          - [ ] La session est persistante sur l'appareil
+          - [ ] En cas d'échec OAuth, un message d'erreur clair est affiché
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-06 — Se connecter" \
+            --label "user-story,auth" \
+            --milestone "Epic 2 — Authentification" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-07
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** citoyen, **je veux** pouvoir supprimer mon compte, **afin que** toutes mes données soient effacées conformément au RGPD.
+
+          ## Critères d'acceptation
+          - [ ] Étant donné un utilisateur connecté, quand il demande la suppression, alors toutes ses données sont effacées sous 30 jours
+          - [ ] Les signalements anonymisés sont conservés (sans lien avec l'utilisateur)
+          - [ ] Une confirmation est demandée avant suppression
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-07 — Supprimer son compte" \
+            --label "user-story,auth,rgpd" \
+            --milestone "Epic 2 — Authentification" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-08
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** citoyen, **je veux** recevoir un récapitulatif annuel de mes contributions, **afin de** mesurer mon impact concret.
+
+          ## Critères d'acceptation
+          - [ ] Chaque année, l'utilisateur reçoit une notification avec le nombre de signalements soumis et traités
+          - [ ] Un écran dédié dans l'app affiche ces stats à tout moment
+          - [ ] Si aucun signalement dans l'année, pas de notification envoyée
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-08 — Récapitulatif annuel" \
+            --label "user-story,auth" \
+            --milestone "Epic 2 — Authentification" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-09
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** citoyen, **je veux** signaler une décharge sauvage en quelques gestes, **afin que** la bonne entité soit notifiée rapidement.
+
+          ## Critères d'acceptation
+          - [ ] Étant donné un utilisateur connecté, quand il ouvre l'app, alors la géolocalisation se lance automatiquement
+          - [ ] Il peut prendre une photo ou en sélectionner une depuis sa galerie
+          - [ ] Il choisit un type de dépôt parmi une liste prédéfinie (ordures, véhicule, gravats, feu de camp…)
+          - [ ] La soumission prend moins de 3 étapes
+          - [ ] Un message de confirmation indique l'entité notifiée
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-09 — Soumettre un signalement" \
+            --label "user-story,signalement" \
+            --milestone "Epic 3 — Signalement" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-10
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** citoyen, **je veux** voir l'état de mes signalements, **afin de** savoir s'ils ont été pris en compte.
+
+          ## Critères d'acceptation
+          - [ ] L'app affiche la liste de mes signalements avec leur statut (`transmis`, `en cours`, `traité`)
+          - [ ] Quand le statut change, je reçois une notification push
+          - [ ] Je peux voir la date de chaque changement de statut
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-10 — Suivre ses signalements" \
+            --label "user-story,signalement" \
+            --milestone "Epic 3 — Signalement" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-11
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant que** système, **je veux** détecter les signalements en doublon, **afin de** ne pas spammer les collectivités.
+
+          ## Critères d'acceptation
+          - [ ] Étant donné un signalement existant dans un rayon de 50m, quand un nouvel utilisateur signale au même endroit, alors il est informé qu'un signalement est déjà en cours
+          - [ ] Il peut tout de même confirmer son signalement pour renforcer le dossier
+          - [ ] Les doublons confirmés sont agrégés en un seul dossier côté collectivité
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-11 — Éviter les doublons" \
+            --label "user-story,signalement" \
+            --milestone "Epic 3 — Signalement" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-12
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant qu'** agent municipal, **je veux** accéder à un dashboard sécurisé, **afin de** consulter les signalements de ma commune.
+
+          ## Critères d'acceptation
+          - [ ] L'accès se fait par invitation uniquement (email envoyé par l'admin)
+          - [ ] Seuls les signalements routés vers ma commune sont visibles
+          - [ ] La connexion est sécurisée (2FA recommandé)
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-12 — Accéder au dashboard" \
+            --label "user-story,dashboard" \
+            --milestone "Epic 4 — Dashboard Collectivité" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-13
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant qu'** agent municipal, **je veux** mettre à jour le statut d'un signalement, **afin d'** informer le citoyen de l'avancement.
+
+          ## Critères d'acceptation
+          - [ ] L'agent peut passer un signalement de `transmis` à `en cours` puis `traité`
+          - [ ] Chaque changement de statut déclenche une notification au citoyen
+          - [ ] L'agent peut ajouter un commentaire interne (non visible du citoyen)
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-13 — Gérer les signalements" \
+            --label "user-story,dashboard" \
+            --milestone "Epic 4 — Dashboard Collectivité" \
+            --body-file /tmp/body.md
+
+      - name: Create Issue US-14
+        run: |
+          cat > /tmp/body.md << 'MARKDOWN'
+          ## User Story
+          **En tant qu'** agent municipal, **je veux** voir les signalements sur une carte, **afin d'** identifier les zones à problèmes récurrents.
+
+          ## Critères d'acceptation
+          - [ ] Les signalements sont affichés sur une carte avec clustering par densité
+          - [ ] Je peux filtrer par statut, type de dépôt, et période
+          - [ ] Un export CSV des signalements est disponible
+          MARKDOWN
+          gh issue create --repo $REPO \
+            --title "US-14 — Visualiser les signalements sur une carte" \
+            --label "user-story,dashboard" \
+            --milestone "Epic 4 — Dashboard Collectivité" \
+            --body-file /tmp/body.md
+
+      - name: Summary
+        run: |
+          echo ""
+          echo "Setup terminé !"
+          echo "Labels : 9 créés"
+          echo "Milestones : 4 créées"
+          echo "Issues : 14 créées"
+          echo "Rendez-vous sur https://github.com/$REPO/issues"
