@@ -1,0 +1,136 @@
+Veille Boisée Non-Commercial License (VBNC-1.0)
+Copyright (c) 2025 Loïc Erard — https://github.com/loicerard/veille-boisee
+
+═══════════════════════════════════════════════════════════════════════
+  ENGLISH VERSION (legally binding)
+═══════════════════════════════════════════════════════════════════════
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to use, copy, modify, merge, and distribute the Software,
+subject to ALL of the following conditions:
+
+1. NON-COMMERCIAL USE ONLY
+
+   The Software may only be used for non-commercial purposes.
+   "Commercial use" means any use primarily intended for, or directed
+   toward, commercial advantage or monetary compensation.
+
+   You may NOT:
+   a) Use the Software as part of a product or service that generates
+      revenue, directly or indirectly;
+   b) Offer the Software or any derivative work as a paid, freemium,
+      or commercially sponsored service (including SaaS, hosting,
+      managed service, or consulting);
+   c) Charge any fee for access to, use of, or support for the Software;
+   d) Use the Software for commercial advantage or monetary compensation
+      of any kind.
+
+   The following are considered NON-COMMERCIAL and are permitted:
+   non-profit organizations, educational institutions, public
+   administrations (municipalities, state agencies), and individual
+   personal projects with no revenue.
+
+2. NO DATA MONETIZATION
+
+   You may NOT:
+   a) Sell, license, rent, share, or otherwise transfer to any third
+      party any data collected through the Software (including but not
+      limited to: user data, location data, report data, behavioral
+      data, or any derived dataset);
+   b) Use data collected through the Software for any form of targeted
+      advertising, behavioral profiling, or user tracking;
+   c) Display any form of advertising, sponsorship, or paid promotion
+      within or alongside the Software;
+   d) Build or operate derivative products or services whose business
+      model relies, directly or indirectly, on data collected by
+      the Software.
+
+3. SHARE-ALIKE (COPYLEFT)
+
+   Any derivative work, modification, or fork of the Software that is
+   distributed to third parties must:
+   a) Be made available under this same license (VBNC-1.0), without
+      any additional restrictions;
+   b) Include the complete source code, publicly accessible.
+
+4. ATTRIBUTION
+
+   All copies or substantial portions of the Software, including
+   derivative works, must include:
+   a) The above copyright notice;
+   b) A visible reference to the original project:
+      https://github.com/loicerard/veille-boisee
+   c) This complete license text.
+
+5. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+   OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
+   NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY,
+   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE.
+
+═══════════════════════════════════════════════════════════════════════
+  VERSION FRANÇAISE (à titre informatif — la version anglaise fait foi)
+═══════════════════════════════════════════════════════════════════════
+
+Toute personne obtenant une copie de ce logiciel et de sa documentation
+est autorisée, gratuitement, à l'utiliser, le copier, le modifier et
+le distribuer, sous réserve du respect de TOUTES les conditions suivantes :
+
+1. USAGE NON COMMERCIAL UNIQUEMENT
+
+   Ce logiciel ne peut être utilisé qu'à des fins non commerciales.
+   Est « commercial » tout usage ayant pour objectif principal ou
+   pour résultat un avantage commercial ou une compensation financière.
+
+   Il est interdit de :
+   a) Utiliser ce logiciel dans un produit ou service générant des
+      revenus, directement ou indirectement ;
+   b) Proposer ce logiciel ou un dérivé comme service payant, freemium
+      ou commercialement sponsorisé (SaaS, hébergement, prestation…) ;
+   c) Facturer l'accès, l'usage ou le support de ce logiciel ;
+   d) Tirer un avantage commercial ou une rémunération de toute nature.
+
+   Sont autorisés (usage non commercial) : associations à but non
+   lucratif, établissements d'enseignement, administrations publiques
+   (mairies, services de l'État), projets personnels sans revenus.
+
+2. INTERDICTION DE MONÉTISATION DES DONNÉES
+
+   Il est interdit de :
+   a) Vendre, licencier, louer, partager ou transférer à des tiers
+      les données collectées via ce logiciel (données utilisateurs,
+      de localisation, de signalement, comportementales, ou tout
+      jeu de données dérivé) ;
+   b) Utiliser ces données à des fins de publicité ciblée, de
+      profilage comportemental ou de traçage des utilisateurs ;
+   c) Afficher toute forme de publicité, parrainage ou promotion
+      payante dans ou autour du logiciel ;
+   d) Construire ou opérer des produits dérivés dont le modèle
+      économique repose, directement ou indirectement, sur les
+      données collectées par ce logiciel.
+
+3. PARTAGE À L'IDENTIQUE (COPYLEFT)
+
+   Tout dérivé, modification ou fork distribué à des tiers doit :
+   a) Être diffusé sous cette même licence (VBNC-1.0), sans
+      restriction supplémentaire ;
+   b) Rendre le code source complet publiquement accessible.
+
+4. ATTRIBUTION
+
+   Toute copie ou partie substantielle, y compris les dérivés, doit
+   inclure : le copyright ci-dessus, une référence visible au projet
+   d'origine (https://github.com/loicerard/veille-boisee) et ce
+   texte de licence complet.
+
+5. ABSENCE DE GARANTIE
+
+   CE LOGICIEL EST FOURNI « TEL QUEL », SANS GARANTIE D'AUCUNE SORTE,
+   EXPRESSE OU IMPLICITE. L'AUTEUR NE POURRA ÊTRE TENU RESPONSABLE
+   D'AUCUN DOMMAGE RÉSULTANT DE L'UTILISATION DE CE LOGICIEL.
