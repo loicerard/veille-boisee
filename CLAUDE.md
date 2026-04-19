@@ -122,12 +122,11 @@ Ce fichier est versionné et modifiable sans redéploiement.
 
 Voir [docs/RGPD.md](./docs/RGPD.md) pour les détails. À respecter systématiquement :
 
-- **Minimisation** : collecter uniquement ce qui est strictement nécessaire
-  (identifiant OAuth anonymisé + token push chiffré — jamais d'email, de nom, d'IP)
+- **Email collecté** (chiffré) pour recours en cas de faux signalement — jamais transmis automatiquement aux collectivités
 - **Pas de donnée personnelle dans les logs** (ni coordonnées GPS brutes)
 - **Droit à l'effacement** : soft delete → purge définitive ≤ 30 jours
 - **Métadonnées EXIF supprimées** des photos avant stockage
-- **Coordonnées GPS floutées à 100 m** après traitement cadastral
+- **Coordonnées GPS précises** stockées et transmises à la collectivité — **floutées à 100 m uniquement pour l'affichage public**
 
 ---
 
