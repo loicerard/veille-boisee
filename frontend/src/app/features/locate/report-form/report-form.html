@@ -1,0 +1,68 @@
+<div class="report-form">
+  <h2 class="report-form__title">Signaler une décharge</h2>
+
+  <p class="report-form__commune">
+    Commune : <strong>{{ commune.name }}</strong>
+    <span class="report-form__insee">(INSEE {{ commune.codeInsee }})</span>
+  </p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="field">
+      <label class="field__label" for="description">
+        Description <span class="field__required" aria-hidden="true">*</span>
+      </label>
+      <textarea
+        id="description"
+        class="field__textarea"
+        formControlName="description"
+        rows="5"
+        placeholder="Décrivez la décharge : type de déchets, quantité estimée, accessibilité…"
+        [attr.aria-invalid]="form.controls.description.invalid && form.controls.description.touched"
+      ></textarea>
+      @if (form.controls.description.touched) {
+        @if (form.controls.description.errors?.['required']) {
+          <p class="field__error" role="alert">La description est obligatoire.</p>
+        } @else if (form.controls.description.errors?.['minlength']) {
+          <p class="field__error" role="alert">La description doit contenir au moins 10 caractères.</p>
+        } @else if (form.controls.description.errors?.['maxlength']) {
+          <p class="field__error" role="alert">La description ne peut pas dépasser 2000 caractères.</p>
+        }
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="contactEmail">
+        Email de contact <span class="field__required" aria-hidden="true">*</span>
+      </label>
+      <input
+        id="contactEmail"
+        type="email"
+        class="field__input"
+        formControlName="contactEmail"
+        autocomplete="email"
+        placeholder="votre@email.fr"
+        [attr.aria-invalid]="form.controls.contactEmail.invalid && form.controls.contactEmail.touched"
+      />
+      <p class="field__hint">
+        Conservé chiffré — jamais transmis aux autorités, uniquement pour recours en cas de faux signalement.
+      </p>
+      @if (form.controls.contactEmail.touched) {
+        @if (form.controls.contactEmail.errors?.['required']) {
+          <p class="field__error" role="alert">L'email est obligatoire.</p>
+        } @else if (form.controls.contactEmail.errors?.['email']) {
+          <p class="field__error" role="alert">Format d'email invalide.</p>
+        }
+      }
+    </div>
+
+    @if (errorMessage()) {
+      <p class="field__error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <div class="report-form__actions">
+      <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+        {{ submitting() ? 'Envoi en cours…' : 'Envoyer le signalement' }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,88 @@
+<div class="locate">
+  <header class="locate__header">
+    <h1>Veille Boisée</h1>
+    <p class="locate__subtitle">
+      Cliquez sur la carte pour identifier la commune, ou utilisez votre position GPS.
+    </p>
+  </header>
+
+  @if (state().kind !== 'reporting' && state().kind !== 'submitted') {
+    <app-map-picker (coordinatesPicked)="onCoordinatesPicked($event)" />
+
+    <div class="locate__actions">
+      <button
+        type="button"
+        class="btn btn--primary"
+        (click)="useCurrentPosition()"
+        [disabled]="state().kind === 'querying'"
+      >
+        📍 Utiliser ma position GPS
+      </button>
+    </div>
+  }
+
+  <div class="locate__result" aria-live="polite">
+    @switch (state().kind) {
+      @case ('querying') {
+        <p class="status status--loading">Identification de la commune…</p>
+      }
+      @case ('geolocationUnavailable') {
+        <p class="status status--error">La géolocalisation n'est pas disponible sur ce navigateur.</p>
+      }
+      @case ('geolocationDenied') {
+        <p class="status status--error">Accès à la position refusé. Autorisez-la dans les paramètres du navigateur.</p>
+      }
+      @case ('result') {
+        @let s = state();
+        @if (s.kind === 'result') {
+          @switch (s.outcome.status) {
+            @case ('found') {
+              <div class="commune-card">
+                <div class="commune-card__info">
+                  <span class="commune-card__name">{{ s.outcome.commune.name }}</span>
+                  <span class="commune-card__code">INSEE {{ s.outcome.commune.codeInsee }}</span>
+                </div>
+                <button type="button" class="btn btn--primary" (click)="startReporting()">
+                  Signaler une décharge ici
+                </button>
+              </div>
+            }
+            @case ('notFound') {
+              <p class="status status--warning">Aucune commune française identifiée à cet endroit.</p>
+            }
+            @case ('invalidCoordinates') {
+              <p class="status status--error">Position hors France métropolitaine et DOM-TOM.</p>
+            }
+            @case ('upstreamUnavailable') {
+              <p class="status status--error">Service indisponible — réessayez dans quelques instants.</p>
+            }
+          }
+        }
+      }
+      @case ('reporting') {
+        @let s = state();
+        @if (s.kind === 'reporting') {
+          <app-report-form
+            [commune]="s.commune"
+            [latitude]="s.latitude"
+            [longitude]="s.longitude"
+            (submitted)="onReportSubmitted($event)"
+          />
+        }
+      }
+      @case ('submitted') {
+        @let s = state();
+        @if (s.kind === 'submitted') {
+          <div class="confirmation">
+            <p class="status status--success">
+              Signalement envoyé. Référence : <code class="confirmation__id">{{ s.reportId }}</code>
+            </p>
+            <button type="button" class="btn btn--secondary" (click)="resetToIdle()">
+              Nouveau signalement
+            </button>
+          </div>
+        }
+      }
+    }
+  </div>
+</div>

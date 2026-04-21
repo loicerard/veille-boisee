@@ -1,0 +1,49 @@
+# ---------- .NET ----------
+bin/
+obj/
+out/
+*.user
+logs/
+*.suo
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.db
+*.nupkg
+*.snupkg
+.vs/
+.vscode/
+*.csproj.user
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# ---------- Node / Angular ----------
+node_modules/
+dist/
+tmp/
+.angular/
+.nx/
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+.env
+.env.*
+!.env.example
+
+# ---------- IDE ----------
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ---------- Build artefacts front ----------
+/frontend/dist
+/frontend/.angular
+/frontend/coverage

@@ -1,0 +1,10 @@
+root = false
+
+# Result<T,E> is an idiomatic DDD pattern — static factory methods on a generic type are intentional.
+[{src,tests}/**/*.cs]
+dotnet_diagnostic.CA1000.severity = none
+
+# Test method names use snake_case_given_when_then for readability — framework convention.
+[tests/**/*.cs]
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1034.severity = none
