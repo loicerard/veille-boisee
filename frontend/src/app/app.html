@@ -1,3 +1,51 @@
-<main>
-  <router-outlet />
-</main>
+<a class="skip-link" href="#main">Aller au contenu</a>
+
+<div class="shell">
+  <header class="shell__header">
+    <div class="container shell__header-inner">
+      <a class="brand" routerLink="/" aria-label="Veille Boisée — accueil">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M16 3c-5.5 4-9 8.5-9 14 0 4.3 2.7 7.8 6.5 9v3h5v-3c3.8-1.2 6.5-4.7 6.5-9 0-5.5-3.5-10-9-14z"
+              fill="currentColor"
+              opacity="0.95"
+            />
+            <path
+              d="M16 7v19"
+              stroke="#faf7f0"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M16 14c-1.8-1-3.2-1.6-5-1.8M16 18c-2-1-3.6-1.5-5.5-1.7M16 14c1.8-1 3.2-1.6 5-1.8M16 18c2-1 3.6-1.5 5.5-1.7"
+              stroke="#faf7f0"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </span>
+        <span class="brand__name">Veille Boisée</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="shell__main">
+    <router-outlet />
+  </main>
+
+  <footer class="shell__footer">
+    <div class="container shell__footer-inner">
+      <p class="shell__footer-meta">
+        Un outil citoyen indépendant · données routées vers la commune ou l'ONF
+      </p>
+      <nav class="shell__footer-nav" aria-label="Liens légaux">
+        <a href="#">Mentions</a>
+        <span aria-hidden="true">·</span>
+        <a href="#">Confidentialité</a>
+        <span aria-hidden="true">·</span>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+  </footer>
+</div>

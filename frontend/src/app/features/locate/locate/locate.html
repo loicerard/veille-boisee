@@ -1,60 +1,119 @@
-<div class="locate">
-  <header class="locate__header">
-    <h1>Veille Boisée</h1>
-    <p class="locate__subtitle">
-      Cliquez sur la carte pour identifier la commune, ou utilisez votre position GPS.
-    </p>
-  </header>
-
+<div class="locate container">
   @if (state().kind !== 'reporting' && state().kind !== 'submitted') {
-    <app-map-picker (coordinatesPicked)="onCoordinatesPicked($event)" />
+    <section class="locate-intro" aria-labelledby="signaler-title">
+      <h1 id="signaler-title" class="locate-intro__title">
+        Où avez-vous repéré la décharge ?
+      </h1>
+      <p class="locate-intro__lead">
+        Le plus simple est d'utiliser votre position si vous êtes sur place.
+        Sinon, positionnez manuellement le repère sur la carte.
+      </p>
+    </section>
 
-    <div class="locate__actions">
+    <section class="locate-action" aria-labelledby="locate-action-title">
+      <h2 id="locate-action-title" class="visually-hidden">Localiser le dépôt</h2>
+
       <button
         type="button"
-        class="btn btn--primary"
+        class="btn btn--primary btn--block btn--hero"
         (click)="useCurrentPosition()"
         [disabled]="state().kind === 'querying'"
       >
-        📍 Utiliser ma position GPS
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+          <path
+            d="M12 2v3M12 19v3M2 12h3M19 12h3"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+          <circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.8" fill="none" />
+          <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+        </svg>
+        Utiliser ma position GPS
       </button>
-    </div>
+
+      <div class="locate-action__divider" aria-hidden="true">
+        <span>ou placez un repère sur la carte</span>
+      </div>
+
+      <app-map-picker (coordinatesPicked)="onCoordinatesPicked($event)" />
+    </section>
   }
 
   <div class="locate__result" aria-live="polite">
     @switch (state().kind) {
       @case ('querying') {
-        <p class="status status--loading">Identification de la commune…</p>
+        <div class="status status--loading">
+          <span class="status__spinner" aria-hidden="true"></span>
+          <span>Identification de la commune…</span>
+        </div>
       }
       @case ('geolocationUnavailable') {
-        <p class="status status--error">La géolocalisation n'est pas disponible sur ce navigateur.</p>
+        <div class="status status--warning">
+          <span class="status__icon" aria-hidden="true">!</span>
+          <span>La géolocalisation n'est pas disponible sur ce navigateur.</span>
+        </div>
       }
       @case ('geolocationDenied') {
-        <p class="status status--error">Accès à la position refusé. Autorisez-la dans les paramètres du navigateur.</p>
+        <div class="status status--warning">
+          <span class="status__icon" aria-hidden="true">!</span>
+          <span>Accès à la position refusé. Autorisez-la dans les paramètres du navigateur.</span>
+        </div>
       }
       @case ('result') {
         @let s = state();
         @if (s.kind === 'result') {
           @switch (s.outcome.status) {
             @case ('found') {
-              <div class="commune-card">
-                <div class="commune-card__info">
+              <article class="commune-card">
+                <div class="commune-card__badge" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="22" height="22">
+                    <path
+                      d="M12 2c-4.4 0-8 3.6-8 8 0 5.5 8 12 8 12s8-6.5 8-12c0-4.4-3.6-8-8-8z"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      fill="none"
+                    />
+                    <circle cx="12" cy="10" r="2.6" fill="currentColor" />
+                  </svg>
+                </div>
+                <div class="commune-card__body">
+                  <span class="commune-card__label">Commune identifiée</span>
                   <span class="commune-card__name">{{ s.outcome.commune.name }}</span>
                   <span class="commune-card__code">INSEE {{ s.outcome.commune.codeInsee }}</span>
                 </div>
-                <button type="button" class="btn btn--primary" (click)="startReporting()">
+                <button type="button" class="btn btn--primary btn--block" (click)="startReporting()">
                   Signaler une décharge ici
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path
+                      d="M5 12h14M13 6l6 6-6 6"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      fill="none"
+                    />
+                  </svg>
                 </button>
-              </div>
+              </article>
             }
             @case ('notFound') {
-              <p class="status status--warning">Aucune commune française identifiée à cet endroit.</p>
+              <div class="status status--warning">
+                <span class="status__icon" aria-hidden="true">?</span>
+                <span>Aucune commune française identifiée à cet endroit.</span>
+              </div>
             }
             @case ('invalidCoordinates') {
-              <p class="status status--error">Position hors France métropolitaine et DOM-TOM.</p>
+              <div class="status status--error">
+                <span class="status__icon" aria-hidden="true">!</span>
+                <span>Position hors France métropolitaine et DOM-TOM.</span>
+              </div>
             }
             @case ('upstreamUnavailable') {
-              <p class="status status--error">Service indisponible — réessayez dans quelques instants.</p>
+              <div class="status status--error">
+                <span class="status__icon" aria-hidden="true">!</span>
+                <span>Service indisponible — réessayez dans quelques instants.</span>
+              </div>
             }
           }
         }
@@ -73,14 +132,33 @@
       @case ('submitted') {
         @let s = state();
         @if (s.kind === 'submitted') {
-          <div class="confirmation">
-            <p class="status status--success">
-              Signalement envoyé. Référence : <code class="confirmation__id">{{ s.reportId }}</code>
+          <article class="confirmation">
+            <div class="confirmation__seal" aria-hidden="true">
+              <svg viewBox="0 0 48 48" width="48" height="48">
+                <circle cx="24" cy="24" r="22" fill="currentColor" opacity="0.12" />
+                <circle cx="24" cy="24" r="16" fill="currentColor" opacity="0.22" />
+                <path
+                  d="M16 24.5l5.5 5.5L33 18"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"
+                />
+              </svg>
+            </div>
+            <h2 class="confirmation__title">Merci — votre vigilance compte.</h2>
+            <p class="confirmation__lead">
+              Le signalement a été transmis aux autorités compétentes. Vous serez
+              recontacté par e-mail uniquement en cas de besoin.
+            </p>
+            <p class="confirmation__ref">
+              Référence : <code>{{ s.reportId }}</code>
             </p>
             <button type="button" class="btn btn--secondary" (click)="resetToIdle()">
-              Nouveau signalement
+              Faire un nouveau signalement
             </button>
-          </div>
+          </article>
         }
       }
     }

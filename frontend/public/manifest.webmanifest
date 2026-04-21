@@ -1,9 +1,15 @@
 {
-  "name": "frontend",
-  "short_name": "frontend",
+  "name": "Veille Boisée",
+  "short_name": "Veille Boisée",
+  "description": "Signalement citoyen de décharges sauvages en forêt, routé vers la commune ou l'ONF compétent.",
+  "lang": "fr",
   "display": "standalone",
+  "orientation": "portrait",
   "scope": "./",
   "start_url": "./",
+  "theme_color": "#2e6b2e",
+  "background_color": "#faf7f0",
+  "categories": ["utilities", "productivity"],
   "icons": [
     {
       "src": "icons/icon-72x72.png",

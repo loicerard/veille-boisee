@@ -1,22 +1,34 @@
-<div class="report-form">
-  <h2 class="report-form__title">Signaler une décharge</h2>
-
-  <p class="report-form__commune">
-    Commune : <strong>{{ commune.name }}</strong>
-    <span class="report-form__insee">(INSEE {{ commune.codeInsee }})</span>
-  </p>
+<article class="report-form">
+  <header class="report-form__header">
+    <span class="report-form__step">Étape finale</span>
+    <h2 class="report-form__title">Décrivez ce que vous avez observé</h2>
+    <p class="report-form__commune">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+        <path
+          d="M12 2c-4.4 0-8 3.6-8 8 0 5.5 8 12 8 12s8-6.5 8-12c0-4.4-3.6-8-8-8z"
+          stroke="currentColor"
+          stroke-width="1.8"
+          fill="none"
+        />
+        <circle cx="12" cy="10" r="2.6" fill="currentColor" />
+      </svg>
+      <strong>{{ commune.name }}</strong>
+      <span class="report-form__insee">INSEE {{ commune.codeInsee }}</span>
+    </p>
+  </header>
 
   <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
     <div class="field">
       <label class="field__label" for="description">
-        Description <span class="field__required" aria-hidden="true">*</span>
+        Description du dépôt
+        <span class="field__required" aria-hidden="true">*</span>
       </label>
       <textarea
         id="description"
         class="field__textarea"
         formControlName="description"
         rows="5"
-        placeholder="Décrivez la décharge : type de déchets, quantité estimée, accessibilité…"
+        placeholder="Ex : un tas de gravats et de plastiques, environ 2 m³, en bordure du chemin forestier, accessible en voiture…"
         [attr.aria-invalid]="form.controls.description.invalid && form.controls.description.touched"
       ></textarea>
       @if (form.controls.description.touched) {
@@ -32,7 +44,8 @@
 
     <div class="field">
       <label class="field__label" for="contactEmail">
-        Email de contact <span class="field__required" aria-hidden="true">*</span>
+        E-mail de contact
+        <span class="field__required" aria-hidden="true">*</span>
       </label>
       <input
         id="contactEmail"
@@ -44,25 +57,52 @@
         [attr.aria-invalid]="form.controls.contactEmail.invalid && form.controls.contactEmail.touched"
       />
       <p class="field__hint">
-        Conservé chiffré — jamais transmis aux autorités, uniquement pour recours en cas de faux signalement.
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <path
+            d="M12 2l8 4v6c0 4.5-3.4 8.7-8 10-4.6-1.3-8-5.5-8-10V6l8-4z"
+            stroke="currentColor"
+            stroke-width="1.6"
+            fill="none"
+          />
+        </svg>
+        Chiffré et confidentiel — jamais transmis à la commune ni à l'ONF.
+        Utilisé uniquement en cas de recours sur un signalement contesté.
       </p>
       @if (form.controls.contactEmail.touched) {
         @if (form.controls.contactEmail.errors?.['required']) {
-          <p class="field__error" role="alert">L'email est obligatoire.</p>
+          <p class="field__error" role="alert">L'e-mail est obligatoire.</p>
         } @else if (form.controls.contactEmail.errors?.['email']) {
-          <p class="field__error" role="alert">Format d'email invalide.</p>
+          <p class="field__error" role="alert">Format d'e-mail invalide.</p>
         }
       }
     </div>
 
     @if (errorMessage()) {
-      <p class="field__error" role="alert">{{ errorMessage() }}</p>
+      <div class="status status--error" role="alert">
+        <span class="status__icon" aria-hidden="true">!</span>
+        <span>{{ errorMessage() }}</span>
+      </div>
     }
 
     <div class="report-form__actions">
-      <button type="submit" class="btn btn--primary" [disabled]="submitting()">
-        {{ submitting() ? 'Envoi en cours…' : 'Envoyer le signalement' }}
+      <button type="submit" class="btn btn--primary btn--block" [disabled]="submitting()">
+        @if (submitting()) {
+          <span class="btn__spinner" aria-hidden="true"></span>
+          Envoi en cours…
+        } @else {
+          Transmettre le signalement
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <path
+              d="M4 12l4 4L20 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+        }
       </button>
     </div>
   </form>
-</div>
+</article>
