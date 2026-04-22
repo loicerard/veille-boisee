@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using VeilleBoisee.Application.Reports.Commands;
+using VeilleBoisee.Application.Reports.Queries;
 using VeilleBoisee.Domain.Entities;
 
 namespace VeilleBoisee.Api.Controllers;
@@ -61,6 +62,19 @@ public sealed class ReportsController : ControllerBase
             _ => StatusCode(StatusCodes.Status500InternalServerError)
         };
     }
+    [HttpGet("{id:guid}/status")]
+    [ProducesResponseType(typeof(ReportStatusResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetStatus(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetReportStatusQuery(id), cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(new ReportStatusResponse(result.Value.ToString()))
+            : NotFound();
+    }
 }
 
 public sealed record SubmitReportRequest(
@@ -72,3 +86,4 @@ public sealed record SubmitReportRequest(
     string ContactEmail);
 
 public sealed record ReportSubmittedResponse(Guid ReportId);
+public sealed record ReportStatusResponse(string Status);

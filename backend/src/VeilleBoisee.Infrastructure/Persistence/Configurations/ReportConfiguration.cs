@@ -23,6 +23,8 @@ internal sealed class ReportConfiguration : IEntityTypeConfiguration<Report>
 
         builder.HasIndex(r => r.CommuneInsee);
         builder.HasIndex(r => r.SubmittedAt);
+        builder.HasIndex(r => new { r.CommuneInsee, r.SubmittedAt });
+        builder.HasIndex(r => new { r.CommuneInsee, r.Status });
 
         builder.HasQueryFilter(r => r.DeletedAt == null);
     }

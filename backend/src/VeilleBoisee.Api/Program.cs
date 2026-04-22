@@ -15,7 +15,8 @@ builder.Host.UseSerilog((context, configuration) =>
 
 builder.Services
     .AddApplication()
-    .AddInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration)
+    .AddScoped<VeilleBoisee.Api.Auth.CollectiviteContext>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi(options =>

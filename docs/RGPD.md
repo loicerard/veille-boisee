@@ -108,7 +108,7 @@ est indépendante de l'identité du déclarant. La minimisation est maintenue
 | Prestataire | Rôle | Données transmises | Localisation | Garanties |
 |------------|------|-------------------|-------------|-----------|
 | Provider OAuth (Google/Apple/Facebook) | Authentification | Token OAuth (flux côté client) + email récupéré une fois à l'inscription | UE / Clauses contractuelles types | DPA signé |
-| Hébergeur applicatif (à définir) | Infrastructure | Données applicatives chiffrées au repos | **UE préféré** | DPA requis |
+| Microsoft Azure (App Service + Static Web Apps + Key Vault + Application Insights) | Hébergement applicatif | Données applicatives chiffrées au repos | **Région UE — France Central ou West Europe** | DPA Microsoft, clauses contractuelles types |
 | IGN / Géoplateforme | Routing cadastral | Coordonnées GPS anonymes (sans userId) | France | Service public |
 | geo.api.gouv.fr | Code INSEE | Coordonnées GPS anonymes (sans userId) | France | Service public |
 | Collectivités destinataires | Traitement du signalement | Signalement (type, photo, **localisation précise**) — email uniquement sur recours formel | France | Convention de traitement (inclut les conditions d'accès à l'email) |

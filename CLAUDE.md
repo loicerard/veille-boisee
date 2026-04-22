@@ -9,17 +9,34 @@ et l'ONF, via la Géoplateforme IGN et l'API Découpage Administratif.
 
 ---
 
+## Stack technique
+
+| Couche | Techno |
+|--------|--------|
+| **Frontend** | Angular (PWA, standalone components, signals), hébergé sur **Azure Static Web Apps** |
+| **Backend** | C# / **.NET 10 LTS** (ASP.NET Core Controllers + MediatR), hébergé sur **Azure App Service Linux** |
+| **Résilience HTTP** | `HttpClientFactory` + `Microsoft.Extensions.Http.Resilience` (retry, timeout, circuit breaker) |
+| **Tests** | xUnit + FluentAssertions + NSubstitute ; `WebApplicationFactory` pour les tests d'intégration |
+| **Secrets** | Azure Key Vault (production), `.env` / `dotnet user-secrets` (dev local) |
+| **Observabilité** | Serilog (JSON) → Application Insights |
+
+---
+
 ## Architecture
 
 ### Clean Architecture (Hexagonale)
 
+Organisation de la solution .NET (`backend/`) :
+
 ```
-src/
-├── domain/           # Entités, value objects, domain events — zéro dépendance externe
-├── application/      # Use cases CQRS : commands + queries + interfaces des ports
-├── infrastructure/   # Repositories, adapters APIs externes, messaging
-└── presentation/     # Controllers HTTP, composants PWA
+backend/src/
+├── VeilleBoisee.Domain/           # Entités, value objects, domain events — zéro dépendance externe
+├── VeilleBoisee.Application/      # Use cases CQRS : commands + queries + interfaces des ports
+├── VeilleBoisee.Infrastructure/   # Repositories, adapters APIs externes (IGN, geo.api.gouv.fr)
+└── VeilleBoisee.Api/              # Controllers ASP.NET Core, middleware de sécurité, DI
 ```
+
+Le front Angular (`frontend/`) consomme l'API via un service HTTP dédié par domaine métier.
 
 **Règle absolue** : les dépendances pointent toujours vers l'intérieur.
 `domain` ne dépend de rien. `application` ne dépend que de `domain`.
@@ -41,6 +58,17 @@ Séparation stricte commandes / requêtes :
 ---
 
 ## Qualité du code
+
+### Langue
+
+- **Documentation, commentaires, issues, PR, messages de commit** : rédigés en français
+- **Code** : anglais exclusivement — identifiants, noms de classes, méthodes, propriétés,
+  paramètres, variables locales, enums, fichiers, branches Git, messages de log techniques
+- Les termes métier typiquement français (`Commune`, `CodeInsee`, `Parcelle`, `ONF`, `Signalement`)
+  restent tels quels : ils font partie du ubiquitous language du domaine administratif français
+  et leur traduction serait une perte de sens
+- Les chaînes destinées à l'utilisateur final (UI, e-mails, notifications) suivent la langue
+  du produit — par défaut français
 
 ### Clean Code
 

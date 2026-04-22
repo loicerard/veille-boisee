@@ -2,6 +2,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, map, of } from 'rxjs';
 
+export type ReportStatus = 'Pending' | 'Routed' | 'Acknowledged' | 'Closed';
+
 import { environment } from '../../../environments/environment';
 
 export interface SubmitReportRequest {
@@ -25,6 +27,16 @@ export type SubmitReportOutcome =
 @Injectable({ providedIn: 'root' })
 export class ReportApi {
   private readonly http = inject(HttpClient);
+
+  getStatus(reportId: string): Observable<ReportStatus | null> {
+    const url = `${environment.apiBaseUrl}/api/reports/${reportId}/status`;
+    return this.http
+      .get<{ status: ReportStatus }>(url)
+      .pipe(
+        map((response) => response.status),
+        catchError(() => of(null)),
+      );
+  }
 
   submit(request: SubmitReportRequest): Observable<SubmitReportOutcome> {
     const url = `${environment.apiBaseUrl}/api/reports`;

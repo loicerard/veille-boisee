@@ -63,6 +63,12 @@
     },
     "serve": {
       "executor": "@angular/build:dev-server",
+      "options": {
+        "ssl": true,
+        "sslKey": "../certs/dev.key",
+        "sslCert": "../certs/dev.crt",
+        "host": "0.0.0.0"
+      },
       "configurations": {
         "production": {
           "buildTarget": "frontend:build:production"

@@ -15,4 +15,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/my-reports/my-reports').then((m) => m.MyReports),
   },
+  {
+    path: 'dashboard',
+    loadChildren: () =>
+      import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
+  },
 ];
