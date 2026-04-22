@@ -55,7 +55,7 @@ côté serveur** — jamais acceptés tels quels depuis le client.
 | **A03 Injection** | ORM avec requêtes paramétrées exclusivement — jamais de concaténation de chaîne SQL |
 | **A04 Conception non sécurisée** | Threat modeling avant chaque nouvelle fonctionnalité exposée |
 | **A05 Mauvaise configuration** | Pas de debug en prod, headers de sécurité systématiques, pas de stack trace publique |
-| **A06 Composants vulnérables** | `npm audit` / `pip audit` bloquant en CI, Dependabot activé |
+| **A06 Composants vulnérables** | `dotnet list package --vulnerable --include-transitive` (back) + `npm audit` (front Angular) bloquants en CI, Dependabot activé |
 | **A07 Auth défaillante** | OAuth uniquement, JWT court, refresh rotation, blacklist |
 | **A08 Intégrité logicielle** | Vérification des checksums des dépendances (lockfile committé) |
 | **A09 Logs insuffisants** | Logs structurés, alertes sur patterns suspects, sans PII |

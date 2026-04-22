@@ -1,0 +1,159 @@
+.my-reports {
+  padding-block: var(--space-7) var(--space-8);
+}
+
+.my-reports__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.my-reports__title {
+  font-size: clamp(1.4rem, 2.5vw + 1rem, 2rem);
+}
+
+// Empty state — réutilise .placeholder de my-reports.scss existant
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-7) var(--space-5);
+  text-align: center;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  color: var(--color-forest-700);
+
+  &__title {
+    font-size: clamp(1.1rem, 2vw + 0.8rem, 1.4rem);
+    color: var(--color-forest-900);
+  }
+
+  &__lead {
+    max-width: 44ch;
+    color: var(--color-ink-600);
+  }
+}
+
+// Report list
+.report-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.report-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    box-shadow: var(--shadow-lift);
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    color: var(--color-forest-600);
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__commune {
+    font-weight: 600;
+    color: var(--color-forest-900);
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    font-size: 0.85rem;
+    color: var(--color-ink-600);
+  }
+
+  &__ref {
+    font-variant-numeric: tabular-nums;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--color-ink-400);
+  }
+
+  &__badge {
+    flex-shrink: 0;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    // Statut inconnu / chargement
+    background: var(--color-ink-100);
+    color: var(--color-ink-500);
+
+    &--pending {
+      background: var(--color-amber-100);
+      color: var(--color-amber-700);
+    }
+
+    &--routed {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    &--acknowledged {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    &--closed {
+      background: var(--color-ink-100);
+      color: var(--color-ink-500);
+    }
+  }
+}
+
+// Bouton — reprend le style global
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+
+  &--primary {
+    background: var(--color-forest-700);
+    color: #fff;
+    box-shadow: 0 8px 18px -10px rgba(46, 107, 46, 0.6);
+
+    &:hover {
+      background: var(--color-forest-900);
+      transform: translateY(-1px);
+    }
+  }
+}

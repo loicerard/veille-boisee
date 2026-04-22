@@ -1,0 +1,66 @@
+<div class="my-reports container">
+
+  <header class="my-reports__header">
+    <h1 class="my-reports__title">Mes signalements</h1>
+    <a class="btn btn--primary" routerLink="/signaler">
+      Nouveau signalement
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      </svg>
+    </a>
+  </header>
+
+  @if (reports().length === 0) {
+    <section class="placeholder">
+      <div class="placeholder__illustration" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="64" height="64">
+          <circle cx="32" cy="32" r="28" fill="currentColor" opacity="0.1" />
+          <path d="M20 22h24v28c0 1.1-.9 2-2 2H22c-1.1 0-2-.9-2-2V22z"
+                stroke="currentColor" stroke-width="2" fill="none" />
+          <path d="M26 16v8M38 16v8M20 30h24" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" />
+          <circle cx="27" cy="38" r="1.5" fill="currentColor" />
+          <circle cx="27" cy="44" r="1.5" fill="currentColor" />
+          <path d="M31 38h10M31 44h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+      </div>
+      <h2 class="placeholder__title">Aucun signalement pour le moment</h2>
+      <p class="placeholder__lead">
+        Vos signalements apparaîtront ici dès que vous en aurez soumis un.
+      </p>
+      <a class="btn btn--primary" routerLink="/signaler">
+        Faire un signalement
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        </svg>
+      </a>
+    </section>
+  } @else {
+    <ul class="report-list" role="list">
+      @for (report of reports(); track report.id) {
+        <li class="report-card">
+          <div class="report-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 28 28" width="22" height="22">
+              <path d="M14 3c-4.4 0-8 3.4-8 7.7 0 5.7 8 14.3 8 14.3s8-8.6 8-14.3C22 6.4 18.4 3 14 3z"
+                    stroke="currentColor" stroke-width="1.9" fill="none" />
+              <circle cx="14" cy="11" r="3" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="report-card__body">
+            <span class="report-card__commune">{{ report.communeName }}</span>
+            <span class="report-card__meta">
+              <time [attr.datetime]="report.submittedAt">{{ report.submittedAt | date:'dd/MM/yyyy' }}</time>
+              · <span class="report-card__ref">Réf. {{ shortId(report.id) }}</span>
+            </span>
+          </div>
+          <span class="report-card__badge report-card__badge--{{ (report.status ?? 'pending').toLowerCase() }}">
+            {{ statusLabel(report.status) }}
+          </span>
+        </li>
+      }
+    </ul>
+  }
+
+</div>

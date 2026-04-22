@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/VeilleBoisee.Api/VeilleBoisee.Api.csproj" />
+    <Project Path="src/VeilleBoisee.Application/VeilleBoisee.Application.csproj" />
+    <Project Path="src/VeilleBoisee.Domain/VeilleBoisee.Domain.csproj" />
+    <Project Path="src/VeilleBoisee.Infrastructure/VeilleBoisee.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/VeilleBoisee.Api.IntegrationTests/VeilleBoisee.Api.IntegrationTests.csproj" />
+    <Project Path="tests/VeilleBoisee.Application.Tests/VeilleBoisee.Application.Tests.csproj" />
+    <Project Path="tests/VeilleBoisee.Domain.Tests/VeilleBoisee.Domain.Tests.csproj" />
+  </Folder>
+</Solution>

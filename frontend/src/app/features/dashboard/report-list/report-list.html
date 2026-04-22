@@ -1,0 +1,88 @@
+<div class="dashboard">
+  <div class="dashboard__header">
+    <h1>Signalements</h1>
+    <button class="btn btn--secondary" (click)="exportCsv()" [disabled]="exporting()">
+      {{ exporting() ? 'Export en cours…' : 'Exporter CSV' }}
+    </button>
+  </div>
+
+  <form [formGroup]="filterForm" (ngSubmit)="applyFilters()" class="filters">
+    <div class="filters__field">
+      <label for="status-filter">Statut</label>
+      <select id="status-filter" formControlName="status">
+        <option [ngValue]="null">Tous</option>
+        <option [ngValue]="0">{{ statusLabels[0] }}</option>
+        <option [ngValue]="1">{{ statusLabels[1] }}</option>
+        <option [ngValue]="2">{{ statusLabels[2] }}</option>
+        <option [ngValue]="3">{{ statusLabels[3] }}</option>
+      </select>
+    </div>
+    <div class="filters__field">
+      <label for="from-filter">Du</label>
+      <input id="from-filter" type="date" formControlName="from" />
+    </div>
+    <div class="filters__field">
+      <label for="to-filter">Au</label>
+      <input id="to-filter" type="date" formControlName="to" />
+    </div>
+    <button type="submit" class="btn btn--primary">Filtrer</button>
+  </form>
+
+  @switch (state().kind) {
+    @case ('loading') {
+      <p class="state-message" aria-live="polite">Chargement…</p>
+    }
+    @case ('error') {
+      <p class="state-message state-message--error" aria-live="polite">
+        Une erreur est survenue. Veuillez réessayer.
+      </p>
+    }
+    @case ('empty') {
+      <p class="state-message" aria-live="polite">Aucun signalement pour ce périmètre.</p>
+    }
+    @case ('loaded') {
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th scope="col">Commune</th>
+            <th scope="col">Statut</th>
+            <th scope="col">Date</th>
+            <th scope="col">Forêt</th>
+            <th scope="col">Natura 2000</th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (report of state().kind === 'loaded' ? $any(state()).page.items : []; track report.id) {
+            <tr>
+              <td>{{ report.communeName }} <small>({{ report.communeInsee }})</small></td>
+              <td><span class="status-badge status-badge--{{ report.status }}">{{ statusLabels[report.status] }}</span></td>
+              <td>{{ report.submittedAt | date:'dd/MM/yyyy' }}</td>
+              <td>{{ report.isInForest ? 'Oui' : 'Non' }}</td>
+              <td>{{ report.isInNatura2000Zone ? 'Oui' : 'Non' }}</td>
+              <td><a [routerLink]="['/dashboard', report.id]" class="btn btn--sm">Voir</a></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (state().kind === 'loaded') {
+        <div class="pagination">
+          <button
+            class="btn btn--secondary btn--sm"
+            [disabled]="currentPage() === 1"
+            (click)="goToPage(currentPage() - 1)">
+            Précédent
+          </button>
+          <span>Page {{ currentPage() }} / {{ totalPages($any(state()).page.totalCount) }}</span>
+          <button
+            class="btn btn--secondary btn--sm"
+            [disabled]="currentPage() >= totalPages($any(state()).page.totalCount)"
+            (click)="goToPage(currentPage() + 1)">
+            Suivant
+          </button>
+        </div>
+      }
+    }
+  }
+</div>
