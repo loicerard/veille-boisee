@@ -16,7 +16,8 @@ internal sealed class ReportConfiguration : IEntityTypeConfiguration<Report>
         // Encrypted email: IV (16 bytes) + ciphertext (≤320 bytes), base64-encoded ≈ 450 chars
         builder.Property(r => r.EncryptedContactEmail).HasMaxLength(600).IsRequired();
         builder.Property(r => r.Status).IsRequired();
-        builder.Property(r => r.SubmittedAt).IsRequired();
+        builder.Property(r => r.SubmittedAt).IsRequired().HasConversion<long>();
+        builder.Property(r => r.DeletedAt).HasConversion<long>();
 
         builder.Property(r => r.ParcelleSection).HasMaxLength(10);
         builder.Property(r => r.ParcelleNumero).HasMaxLength(10);
