@@ -33,8 +33,14 @@ public static class DependencyInjection
                 options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(15);
             });
 
+        var connectionString = configuration.GetConnectionString("DefaultConnection")!;
         services.AddDbContext<VeilleBoiseeDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        {
+            if (connectionString.StartsWith("Data Source=", StringComparison.OrdinalIgnoreCase))
+                options.UseSqlite(connectionString);
+            else
+                options.UseSqlServer(connectionString);
+        });
 
         services.AddScoped<IReportRepository, ReportRepository>();
 

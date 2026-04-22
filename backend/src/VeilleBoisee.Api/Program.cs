@@ -35,9 +35,13 @@ builder.Services.AddOpenApi(options =>
 const string FrontendCorsPolicy = "frontend";
 builder.Services.AddCors(options =>
     options.AddPolicy(FrontendCorsPolicy, policy =>
-        policy.WithOrigins("http://localhost:4200")
+    {
+        var allowedOrigins = builder.Configuration
+            .GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+        policy.WithOrigins(allowedOrigins)
               .WithMethods("GET", "POST")
-              .WithHeaders("Content-Type")));
+              .WithHeaders("Content-Type");
+    }));
 
 var app = builder.Build();
 
@@ -64,7 +68,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseHsts();
-    app.UseHttpsRedirection();
 }
 
 app.UseCors(FrontendCorsPolicy);

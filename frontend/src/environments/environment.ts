@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: '',
+  apiBaseUrl: 'https://ca-demo-veille-boisee-api.wonderfulrock-c585a80b.francecentral.azurecontainerapps.io',
 };
