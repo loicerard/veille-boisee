@@ -28,12 +28,17 @@ public sealed class Report
     public bool? IsInForest { get; private set; }
     public bool? IsInNatura2000Zone { get; private set; }
 
+    public byte[]? PhotoData { get; private set; }
+    public string? PhotoMimeType { get; private set; }
+
     public static Report Create(
         Coordinates location,
         CodeInsee communeInsee,
         string communeName,
         string description,
-        string encryptedContactEmail)
+        string encryptedContactEmail,
+        byte[]? photoData = null,
+        string? photoMimeType = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(communeName);
         ArgumentException.ThrowIfNullOrWhiteSpace(description);
@@ -49,7 +54,9 @@ public sealed class Report
             Description = description,
             EncryptedContactEmail = encryptedContactEmail,
             Status = ReportStatus.Pending,
-            SubmittedAt = DateTimeOffset.UtcNow
+            SubmittedAt = DateTimeOffset.UtcNow,
+            PhotoData = photoData,
+            PhotoMimeType = photoMimeType
         };
     }
 

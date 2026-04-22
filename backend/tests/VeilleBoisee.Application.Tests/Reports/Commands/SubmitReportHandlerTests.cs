@@ -11,8 +11,9 @@ public class SubmitReportHandlerTests
     private readonly InMemoryReportRepository _repository = new();
     private readonly FakeEmailEncryptionService _encryption = new();
     private readonly FakeGeographicEnrichmentService _enrichment = new();
+    private readonly FakeExifStrippingService _exifStripping = new();
 
-    private SubmitReportHandler CreateHandler() => new(_repository, _encryption, _enrichment);
+    private SubmitReportHandler CreateHandler() => new(_repository, _encryption, _enrichment, _exifStripping);
 
     private static SubmitReportCommand ValidCommand(
         string description = "Décharge de pneus usagés au bord du chemin forestier, quantité importante.",
@@ -166,5 +167,39 @@ public class SubmitReportHandlerTests
 
         // Assert
         _repository.Reports.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Persists_photo_bytes_when_photo_is_provided()
+    {
+        // Arrange
+        var photoBytes = new byte[] { 0xFF, 0xD8, 0xFF };
+        using var photoStream = new MemoryStream(photoBytes);
+        var command = ValidCommand() with { PhotoStream = photoStream, PhotoMimeType = "image/jpeg" };
+
+        // Act
+        var result = await CreateHandler().Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        var report = _repository.Reports[0];
+        report.PhotoData.Should().BeEquivalentTo(photoBytes);
+        report.PhotoMimeType.Should().Be("image/jpeg");
+    }
+
+    [Fact]
+    public async Task Persists_no_photo_when_photo_is_not_provided()
+    {
+        // Arrange
+        var command = ValidCommand();
+
+        // Act
+        var result = await CreateHandler().Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        var report = _repository.Reports[0];
+        report.PhotoData.Should().BeNull();
+        report.PhotoMimeType.Should().BeNull();
     }
 }

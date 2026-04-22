@@ -12,7 +12,9 @@ public sealed record SubmitReportCommand(
     string CommuneInsee,
     string CommuneName,
     string Description,
-    string ContactEmail
+    string ContactEmail,
+    Stream? PhotoStream = null,
+    string? PhotoMimeType = null
 ) : IRequest<Result<Guid, SubmitReportError>>;
 
 public enum SubmitReportError
@@ -29,15 +31,18 @@ internal sealed class SubmitReportHandler
     private readonly IReportRepository _repository;
     private readonly IEmailEncryptionService _encryption;
     private readonly IGeographicEnrichmentService _enrichment;
+    private readonly IExifStrippingService _exifStripping;
 
     public SubmitReportHandler(
         IReportRepository repository,
         IEmailEncryptionService encryption,
-        IGeographicEnrichmentService enrichment)
+        IGeographicEnrichmentService enrichment,
+        IExifStrippingService exifStripping)
     {
         _repository = repository;
         _encryption = encryption;
         _enrichment = enrichment;
+        _exifStripping = exifStripping;
     }
 
     public async Task<Result<Guid, SubmitReportError>> Handle(
@@ -62,12 +67,19 @@ internal sealed class SubmitReportHandler
             return SubmitReportError.InvalidContactEmail;
 
         var encryptedEmail = _encryption.Encrypt(emailResult.Value.Value);
+
+        byte[]? photoData = null;
+        if (request.PhotoStream is not null)
+            photoData = await _exifStripping.StripExifAsync(request.PhotoStream, cancellationToken);
+
         var report = Report.Create(
             coordinatesResult.Value,
             codeInseeResult.Value,
             request.CommuneName,
             request.Description,
-            encryptedEmail);
+            encryptedEmail,
+            photoData,
+            request.PhotoMimeType);
 
         await _repository.AddAsync(report, cancellationToken);
 

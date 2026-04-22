@@ -28,6 +28,17 @@
           [latitude]="s.report.latitude"
           [longitude]="s.report.longitude" />
 
+        @if (s.report.hasPhoto) {
+          <section class="detail-section detail-section--photo">
+            <h2>Photo</h2>
+            <img
+              [src]="photoUrl(s.report.id)"
+              alt="Photo du dépôt sauvage"
+              class="report-photo"
+            />
+          </section>
+        }
+
         <section class="detail-section">
           <h2>Description</h2>
           <p>{{ s.report.description }}</p>

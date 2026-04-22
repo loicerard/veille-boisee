@@ -50,6 +50,7 @@ export interface ReportDetail {
   parcelleNumero: string | null;
   isInForest: boolean | null;
   isInNatura2000Zone: boolean | null;
+  hasPhoto: boolean;
 }
 
 export interface ListFilters {

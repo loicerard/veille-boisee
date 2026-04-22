@@ -49,7 +49,10 @@
       "mcp__Claude_Preview__preview_start",
       "Bash(git checkout *)",
       "Bash(dotnet ef *)",
-      "Bash(xargs cat *)"
+      "Bash(xargs cat *)",
+      "Bash(node \"K:\\\\Code\\\\veille-boisee\\\\frontend\\\\node_modules\\\\.bin\\\\ng\" build --configuration=development)",
+      "Bash(xargs grep *)",
+      "Bash(find /k/Code/veille-boisee/frontend/src/app -type f \\\\\\( -name \"*.ts\" -o -name \"*.html\" \\\\\\) -exec grep -l \"img\\\\|image\\\\|photo\\\\|picture\" {} \\\\;)"
     ]
   }
 }

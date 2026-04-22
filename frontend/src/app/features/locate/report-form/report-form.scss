@@ -80,6 +80,13 @@
     margin-inline-start: 2px;
   }
 
+  &__optional {
+    font-weight: 400;
+    color: var(--color-ink-400);
+    margin-inline-start: var(--space-2);
+    font-size: 0.85em;
+  }
+
   &__input,
   &__textarea {
     width: 100%;
@@ -211,6 +218,17 @@
     width: 100%;
   }
 
+  &--secondary {
+    background: var(--color-surface-sunk);
+    color: var(--color-forest-700);
+    border: 1.5px solid var(--color-forest-300);
+
+    &:hover:not(:disabled) {
+      background: var(--color-moss-100);
+      border-color: var(--color-forest-500);
+    }
+  }
+
   &--primary {
     background: var(--color-forest-700);
     color: #fff;
@@ -234,6 +252,45 @@
     border: 2px solid currentColor;
     border-right-color: transparent;
     animation: spin 0.7s linear infinite;
+  }
+}
+
+.photo-preview {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-surface-sunk);
+
+  img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__remove {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: #fff;
+    background: var(--color-clay-500);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-out);
+
+    &:hover {
+      background: #a03020;
+    }
   }
 }
 

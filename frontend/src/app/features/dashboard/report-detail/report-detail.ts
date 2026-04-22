@@ -10,6 +10,7 @@ import {
   ReportStatus,
 } from '../dashboard-report-api';
 import { ReportMapDisplay } from '../report-map-display/report-map-display';
+import { environment } from '../../../../environments/environment';
 
 type ViewState =
   | { kind: 'loading' }
@@ -66,5 +67,9 @@ export class ReportDetail implements OnInit {
 
   nextStatus(current: ReportStatus): ReportStatus | undefined {
     return this.nextStatuses[current];
+  }
+
+  photoUrl(reportId: string): string {
+    return `${environment.apiBaseUrl}/api/reports/${reportId}/photo`;
   }
 }

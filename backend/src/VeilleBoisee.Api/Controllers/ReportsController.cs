@@ -10,25 +10,58 @@ namespace VeilleBoisee.Api.Controllers;
 [Route("api/[controller]")]
 public sealed class ReportsController : ControllerBase
 {
+    private static readonly HashSet<string> AllowedPhotoMimeTypes =
+        ["image/jpeg", "image/png", "image/webp"];
+    private const long MaxPhotoSizeBytes = 5 * 1024 * 1024;
+
     private readonly IMediator _mediator;
 
     public ReportsController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(ReportSubmittedResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> Submit(
-        [FromBody] SubmitReportRequest request,
+        [FromForm] SubmitReportRequest request,
+        IFormFile? photo,
         CancellationToken cancellationToken)
     {
+        Stream? photoStream = null;
+        string? photoMimeType = null;
+
+        if (photo is not null)
+        {
+            if (photo.Length > MaxPhotoSizeBytes)
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Photo too large",
+                    Detail = "La photo ne peut pas dépasser 5 Mo.",
+                    Status = StatusCodes.Status400BadRequest
+                });
+
+            if (!AllowedPhotoMimeTypes.Contains(photo.ContentType))
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Unsupported photo format",
+                    Detail = "Formats acceptés : JPEG, PNG, WebP.",
+                    Status = StatusCodes.Status400BadRequest
+                });
+
+            photoStream = photo.OpenReadStream();
+            photoMimeType = photo.ContentType;
+        }
+
         var command = new SubmitReportCommand(
             request.Latitude,
             request.Longitude,
             request.CommuneInsee,
             request.CommuneName,
             request.Description,
-            request.ContactEmail);
+            request.ContactEmail,
+            photoStream,
+            photoMimeType);
 
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -62,6 +95,20 @@ public sealed class ReportsController : ControllerBase
             _ => StatusCode(StatusCodes.Status500InternalServerError)
         };
     }
+
+    [HttpGet("{id:guid}/photo")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPhoto(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetReportPhotoQuery(id), cancellationToken);
+
+        if (!result.IsSuccess)
+            return NotFound();
+
+        return File(result.Value.Data, result.Value.MimeType);
+    }
+
     [HttpGet("{id:guid}/status")]
     [ProducesResponseType(typeof(ReportStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

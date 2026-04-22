@@ -8,6 +8,7 @@ using VeilleBoisee.Infrastructure.Geocoding;
 using VeilleBoisee.Infrastructure.Enrichment;
 using VeilleBoisee.Infrastructure.Persistence;
 using VeilleBoisee.Infrastructure.Persistence.Repositories;
+using VeilleBoisee.Infrastructure.Photos;
 using VeilleBoisee.Infrastructure.Security;
 
 namespace VeilleBoisee.Infrastructure;
@@ -72,6 +73,8 @@ public static class DependencyInjection
             });
 
         services.AddTransient<IGeographicEnrichmentService, GeographicEnrichmentService>();
+
+        services.AddSingleton<IExifStrippingService, ImageSharpExifStrippingService>();
 
         return services;
     }

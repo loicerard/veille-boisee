@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VeilleBoisee.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using VeilleBoisee.Infrastructure.Persistence;
 namespace VeilleBoisee.Infrastructure.Migrations
 {
     [DbContext(typeof(VeilleBoiseeDbContext))]
-    partial class VeilleBoiseeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260422075741_AddPhotoToReport")]
+    partial class AddPhotoToReport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
