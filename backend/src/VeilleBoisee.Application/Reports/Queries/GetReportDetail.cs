@@ -26,7 +26,8 @@ public sealed record ReportDetailDto(
     string? ParcelleSection,
     string? ParcelleNumero,
     bool? IsInForest,
-    bool? IsInNatura2000Zone);
+    bool? IsInNatura2000Zone,
+    bool HasPhoto);
 
 internal sealed class GetReportDetailHandler
     : IRequestHandler<GetReportDetailQuery, Result<ReportDetailDto, GetReportDetailError>>
@@ -64,6 +65,7 @@ internal sealed class GetReportDetailHandler
             report.ParcelleSection,
             report.ParcelleNumero,
             report.IsInForest,
-            report.IsInNatura2000Zone);
+            report.IsInNatura2000Zone,
+            report.PhotoData is not null);
     }
 }

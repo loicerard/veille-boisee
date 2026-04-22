@@ -43,6 +43,46 @@
     </div>
 
     <div class="field">
+      <label class="field__label">
+        Photo
+        <span class="field__optional">(facultatif)</span>
+      </label>
+      <input
+        #photoInput
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        capture="environment"
+        (change)="onPhotoSelected($event)"
+        hidden
+      />
+      @if (!selectedPhoto()) {
+        <button type="button" class="btn btn--secondary" (click)="photoInput.click()">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8" fill="none" />
+            <path
+              d="M9 3H7L5 6H3a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-2L17 3h-2"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+          Prendre / choisir une photo
+        </button>
+      } @else {
+        <div class="photo-preview">
+          <img [src]="photoPreviewUrl()" alt="Aperçu de la photo" />
+          <button type="button" class="photo-preview__remove" (click)="removePhoto()" aria-label="Supprimer la photo">
+            ✕
+          </button>
+        </div>
+      }
+      @if (photoError()) {
+        <p class="field__error" role="alert">{{ photoError() }}</p>
+      }
+    </div>
+
+    <div class="field">
       <label class="field__label" for="contactEmail">
         E-mail de contact
         <span class="field__required" aria-hidden="true">*</span>

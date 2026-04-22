@@ -38,10 +38,20 @@ export class ReportApi {
       );
   }
 
-  submit(request: SubmitReportRequest): Observable<SubmitReportOutcome> {
+  submit(request: SubmitReportRequest, photo: File | null): Observable<SubmitReportOutcome> {
     const url = `${environment.apiBaseUrl}/api/reports`;
+    const formData = new FormData();
+    formData.append('latitude', String(request.latitude));
+    formData.append('longitude', String(request.longitude));
+    formData.append('communeInsee', request.communeInsee);
+    formData.append('communeName', request.communeName);
+    formData.append('description', request.description);
+    formData.append('contactEmail', request.contactEmail);
+    if (photo) {
+      formData.append('photo', photo);
+    }
     return this.http
-      .post<ReportSubmittedResponse>(url, request)
+      .post<ReportSubmittedResponse>(url, formData)
       .pipe(
         map((response): SubmitReportOutcome => ({ status: 'submitted', reportId: response.reportId })),
         catchError((error: HttpErrorResponse): Observable<SubmitReportOutcome> => {
