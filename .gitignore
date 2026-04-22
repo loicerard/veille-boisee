@@ -47,3 +47,4 @@ Thumbs.db
 /frontend/dist
 /frontend/.angular
 /frontend/coverage
+/create-dev-certs.ps1
