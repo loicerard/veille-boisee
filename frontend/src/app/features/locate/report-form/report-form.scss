@@ -255,6 +255,16 @@
   }
 }
 
+.photo-actions {
+  display: flex;
+  gap: var(--space-3);
+
+  .btn {
+    flex: 1;
+    font-size: 0.9rem;
+  }
+}
+
 .photo-preview {
   position: relative;
   border-radius: var(--radius-md);
