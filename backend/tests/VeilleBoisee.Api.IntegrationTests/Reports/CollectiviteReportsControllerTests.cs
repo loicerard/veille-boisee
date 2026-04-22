@@ -188,8 +188,9 @@ public class CollectiviteReportsControllerTests : IClassFixture<WebApplicationFa
                     foreach (var d in sqlServerConfigs) services.Remove(d);
 
                     services.RemoveAll<DbContextOptions<VeilleBoiseeDbContext>>();
+                    var dbName = $"test-{Guid.NewGuid()}";
                     services.AddDbContext<VeilleBoiseeDbContext>(opts =>
-                        opts.UseInMemoryDatabase($"test-{Guid.NewGuid()}"));
+                        opts.UseInMemoryDatabase(dbName));
 
                     services.RemoveAll<IEmailEncryptionService>();
                     services.AddSingleton(encryption);
