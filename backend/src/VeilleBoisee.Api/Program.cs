@@ -46,11 +46,11 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+await using (var scope = app.Services.CreateAsyncScope())
 {
-    await using var scope = app.Services.CreateAsyncScope();
     var database = scope.ServiceProvider.GetRequiredService<VeilleBoiseeDbContext>().Database;
-    await database.EnsureDeletedAsync();
+    if (app.Environment.IsDevelopment())
+        await database.EnsureDeletedAsync();
     await database.EnsureCreatedAsync();
 }
 
