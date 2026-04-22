@@ -52,7 +52,9 @@
       "Bash(xargs cat *)",
       "Bash(node \"K:\\\\Code\\\\veille-boisee\\\\frontend\\\\node_modules\\\\.bin\\\\ng\" build --configuration=development)",
       "Bash(xargs grep *)",
-      "Bash(find /k/Code/veille-boisee/frontend/src/app -type f \\\\\\( -name \"*.ts\" -o -name \"*.html\" \\\\\\) -exec grep -l \"img\\\\|image\\\\|photo\\\\|picture\" {} \\\\;)"
+      "Bash(find /k/Code/veille-boisee/frontend/src/app -type f \\\\\\( -name \"*.ts\" -o -name \"*.html\" \\\\\\) -exec grep -l \"img\\\\|image\\\\|photo\\\\|picture\" {} \\\\;)",
+      "Bash(gh pr *)",
+      "Bash(python3 -c \"import os, base64; print\\(base64.b64encode\\(os.urandom\\(32\\)\\).decode\\(\\)\\)\")"
     ]
   }
 }

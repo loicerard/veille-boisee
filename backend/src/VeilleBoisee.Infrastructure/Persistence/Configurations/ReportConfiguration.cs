@@ -21,7 +21,6 @@ internal sealed class ReportConfiguration : IEntityTypeConfiguration<Report>
         builder.Property(r => r.ParcelleSection).HasMaxLength(10);
         builder.Property(r => r.ParcelleNumero).HasMaxLength(10);
 
-        builder.Property(r => r.PhotoData).HasColumnType("varbinary(max)");
         builder.Property(r => r.PhotoMimeType).HasMaxLength(50);
 
         builder.HasIndex(r => r.CommuneInsee);
