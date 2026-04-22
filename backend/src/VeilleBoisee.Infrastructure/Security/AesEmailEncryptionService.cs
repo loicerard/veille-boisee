@@ -35,4 +35,19 @@ internal sealed class AesEmailEncryptionService : IEmailEncryptionService
 
         return Convert.ToBase64String(result);
     }
+
+    public string Decrypt(string ciphertext)
+    {
+        var data = Convert.FromBase64String(ciphertext);
+        var iv = data[..16];
+        var encrypted = data[16..];
+
+        using var aes = Aes.Create();
+        aes.Key = _key;
+        aes.IV = iv;
+
+        using var decryptor = aes.CreateDecryptor();
+        var plainBytes = decryptor.TransformFinalBlock(encrypted, 0, encrypted.Length);
+        return Encoding.UTF8.GetString(plainBytes);
+    }
 }

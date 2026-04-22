@@ -1,3 +1,4 @@
+using VeilleBoisee.Domain.Common;
 using VeilleBoisee.Domain.Enums;
 using VeilleBoisee.Domain.ValueObjects;
 
@@ -58,5 +59,19 @@ public sealed class Report
         ParcelleNumero = parcelleNumero;
         IsInForest = isInForest;
         IsInNatura2000Zone = isInNatura2000Zone;
+    }
+
+    public Result<ReportStatus, ReportStatusTransitionError> UpdateStatus(ReportStatus next)
+    {
+        var valid = (Status, next) is
+            (ReportStatus.Pending, ReportStatus.Routed) or
+            (ReportStatus.Routed, ReportStatus.Acknowledged) or
+            (ReportStatus.Acknowledged, ReportStatus.Closed);
+
+        if (!valid)
+            return ReportStatusTransitionError.InvalidTransition;
+
+        Status = next;
+        return Status;
     }
 }

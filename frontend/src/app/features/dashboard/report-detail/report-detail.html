@@ -1,0 +1,73 @@
+<div class="detail-page">
+  <a routerLink="/dashboard" class="back-link">← Retour à la liste</a>
+
+  @switch (state().kind) {
+    @case ('loading') {
+      <p class="state-message" aria-live="polite">Chargement…</p>
+    }
+    @case ('notFound') {
+      <p class="state-message state-message--error">Signalement introuvable.</p>
+    }
+    @case ('error') {
+      <p class="state-message state-message--error">Une erreur est survenue.</p>
+    }
+    @case ('loaded') {
+      @let s = $any(state());
+      <div class="detail-card">
+        <header class="detail-card__header">
+          <div>
+            <h1 class="detail-card__title">Signalement — {{ s.report.communeName }}</h1>
+            <p class="detail-card__meta">{{ s.report.communeInsee }} · {{ s.report.submittedAt | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+          <span class="status-badge status-badge--{{ s.report.status }}">
+            {{ statusLabels[s.report.status] }}
+          </span>
+        </header>
+
+        <app-report-map-display
+          [latitude]="s.report.latitude"
+          [longitude]="s.report.longitude" />
+
+        <section class="detail-section">
+          <h2>Description</h2>
+          <p>{{ s.report.description }}</p>
+        </section>
+
+        <section class="detail-section">
+          <h2>Enrichissement géographique</h2>
+          <dl class="detail-dl">
+            <dt>Parcelle</dt>
+            <dd>
+              @if (s.report.parcelleSection && s.report.parcelleNumero) {
+                Section {{ s.report.parcelleSection }}, parcelle {{ s.report.parcelleNumero }}
+              } @else {
+                Non disponible
+              }
+            </dd>
+            <dt>Zone forestière</dt>
+            <dd>{{ s.report.isInForest === null ? 'Non déterminé' : (s.report.isInForest ? 'Oui' : 'Non') }}</dd>
+            <dt>Zone Natura 2000</dt>
+            <dd>{{ s.report.isInNatura2000Zone === null ? 'Non déterminé' : (s.report.isInNatura2000Zone ? 'Oui' : 'Non') }}</dd>
+          </dl>
+        </section>
+
+        <section class="detail-section">
+          <h2>Statut</h2>
+          @if (nextStatus(s.report.status); as next) {
+            <button
+              class="btn btn--primary"
+              [disabled]="s.updating"
+              (click)="updateStatus(next)">
+              {{ s.updating ? 'Mise à jour…' : 'Passer à : ' + statusLabels[next] }}
+            </button>
+          } @else {
+            <p class="status-final">Ce signalement est clôturé.</p>
+          }
+          @if (s.updateError) {
+            <p class="error-msg" aria-live="polite">{{ s.updateError }}</p>
+          }
+        </section>
+      </div>
+    }
+  }
+</div>

@@ -15,7 +15,8 @@ builder.Host.UseSerilog((context, configuration) =>
 
 builder.Services
     .AddApplication()
-    .AddInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration)
+    .AddScoped<VeilleBoisee.Api.Auth.CollectiviteContext>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi(options =>
@@ -35,9 +36,15 @@ builder.Services.AddOpenApi(options =>
 const string FrontendCorsPolicy = "frontend";
 builder.Services.AddCors(options =>
     options.AddPolicy(FrontendCorsPolicy, policy =>
-        policy.WithOrigins("http://localhost:4200")
-              .WithMethods("GET", "POST")
-              .WithHeaders("Content-Type")));
+    {
+        if (builder.Environment.IsDevelopment())
+            policy.SetIsOriginAllowed(_ => true);
+        else
+            policy.WithOrigins("https://veille-boisee.fr"); // TODO: remplacer par l'URL de prod
+
+        policy.WithMethods("GET", "POST", "PATCH")
+              .WithHeaders("Content-Type");
+    }));
 
 var app = builder.Build();
 

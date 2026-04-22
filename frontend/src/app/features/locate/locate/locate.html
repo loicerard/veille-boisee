@@ -60,6 +60,18 @@
           <span>Accès à la position refusé. Autorisez-la dans les paramètres du navigateur.</span>
         </div>
       }
+      @case ('geolocationInsecureContext') {
+        <div class="status status--warning">
+          <span class="status__icon" aria-hidden="true">!</span>
+          <span>La géolocalisation nécessite une connexion sécurisée (HTTPS).</span>
+        </div>
+      }
+      @case ('geolocationTimeout') {
+        <div class="status status--warning">
+          <span class="status__icon" aria-hidden="true">!</span>
+          <span>Délai dépassé — vérifiez que le GPS est activé puis réessayez.</span>
+        </div>
+      }
       @case ('result') {
         @let s = state();
         @if (s.kind === 'result') {

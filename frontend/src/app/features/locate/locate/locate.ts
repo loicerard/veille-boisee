@@ -1,5 +1,6 @@
 import { Component, ViewChild, inject, signal } from '@angular/core';
 
+import { SavedReportsService } from '../../my-reports/saved-reports.service';
 import { CommuneApi, CommuneLookupOutcome, CommuneResponse } from '../commune-api';
 import { MapPicker, PickedCoordinates } from '../map-picker/map-picker';
 import { ReportForm } from '../report-form/report-form';
@@ -10,6 +11,8 @@ type ViewState =
   | { kind: 'result'; outcome: CommuneLookupOutcome; latitude: number; longitude: number }
   | { kind: 'geolocationDenied' }
   | { kind: 'geolocationUnavailable' }
+  | { kind: 'geolocationInsecureContext' }
+  | { kind: 'geolocationTimeout' }
   | { kind: 'reporting'; commune: CommuneResponse; latitude: number; longitude: number }
   | { kind: 'submitted'; reportId: string };
 
@@ -23,6 +26,7 @@ export class Locate {
   @ViewChild(MapPicker) private readonly mapPicker!: MapPicker;
 
   private readonly communeApi = inject(CommuneApi);
+  private readonly savedReports = inject(SavedReportsService);
 
   readonly state = signal<ViewState>({ kind: 'idle' });
 
@@ -31,6 +35,11 @@ export class Locate {
   }
 
   useCurrentPosition(): void {
+    if (!window.isSecureContext) {
+      this.state.set({ kind: 'geolocationInsecureContext' });
+      return;
+    }
+
     if (!navigator.geolocation) {
       this.state.set({ kind: 'geolocationUnavailable' });
       return;
@@ -42,7 +51,15 @@ export class Locate {
         this.mapPicker.placeAt(latitude, longitude);
         this.queryCommune(latitude, longitude);
       },
-      () => this.state.set({ kind: 'geolocationDenied' }),
+      (error) => {
+        if (error.code === GeolocationPositionError.TIMEOUT) {
+          this.state.set({ kind: 'geolocationTimeout' });
+        } else if (error.code === GeolocationPositionError.POSITION_UNAVAILABLE) {
+          this.state.set({ kind: 'geolocationUnavailable' });
+        } else {
+          this.state.set({ kind: 'geolocationDenied' });
+        }
+      },
       { enableHighAccuracy: true, timeout: 10000 },
     );
   }
@@ -54,6 +71,14 @@ export class Locate {
   }
 
   onReportSubmitted(reportId: string): void {
+    const s = this.state();
+    if (s.kind === 'reporting') {
+      this.savedReports.save({
+        id: reportId,
+        communeName: s.commune.name,
+        submittedAt: new Date().toISOString(),
+      });
+    }
     this.state.set({ kind: 'submitted', reportId });
   }
 
