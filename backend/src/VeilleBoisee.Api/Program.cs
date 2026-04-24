@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
 using Scalar.AspNetCore;
 using Serilog;
 using VeilleBoisee.Api.Middleware;
@@ -13,9 +15,18 @@ builder.Host.UseSerilog((context, configuration) =>
         .Enrich.FromLogContext()
         .WriteTo.Console(new Serilog.Formatting.Json.JsonFormatter()));
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+builder.Services.AddAuthorization(options =>
+    options.AddPolicy("IsCitizen", policy => policy
+        .RequireAuthenticatedUser()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)));
+
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration)
+    .AddHttpContextAccessor()
     .AddScoped<VeilleBoisee.Api.Auth.CollectiviteContext>();
 
 builder.Services.AddControllers();
@@ -40,8 +51,8 @@ builder.Services.AddCors(options =>
         var allowedOrigins = builder.Configuration
             .GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
         policy.WithOrigins(allowedOrigins)
-              .WithMethods("GET", "POST")
-              .WithHeaders("Content-Type");
+              .WithMethods("GET", "POST", "PATCH")
+              .WithHeaders("Content-Type", "Authorization");
     }));
 
 var app = builder.Build();
@@ -72,6 +83,8 @@ else
 }
 
 app.UseCors(FrontendCorsPolicy);
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

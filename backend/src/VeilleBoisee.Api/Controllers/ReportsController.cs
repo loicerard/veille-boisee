@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VeilleBoisee.Application.Reports.Commands;
 using VeilleBoisee.Application.Reports.Queries;
@@ -19,6 +20,7 @@ public sealed class ReportsController : ControllerBase
     public ReportsController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost]
+    [Authorize(Policy = "IsCitizen")]
     [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(ReportSubmittedResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
