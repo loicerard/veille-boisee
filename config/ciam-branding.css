@@ -1,0 +1,113 @@
+/*
+ * Veille Boisée — Custom CIAM branding
+ *
+ * Contraintes Microsoft Entra External ID :
+ * - @import bloqué (fDisallowExternalFonts: true) → polices système uniquement
+ * - Sélecteurs ID (#) bloqués
+ * - Sélecteurs d'attributs ([data-testid]) bloqués
+ * - Autorisé : classes .ext-*, sélecteurs d'éléments, pseudo-classes
+ */
+
+/* ─── Page ────────────────────────────────────────────────────────────────── */
+
+body {
+  background-color: #faf7f0 !important;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+}
+
+/* ─── Carte principale ────────────────────────────────────────────────────── */
+
+.ext-sign-in-box {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+  background: #ffffff !important;
+  border-radius: 18px !important;
+  box-shadow:
+    0 1px 2px rgba(31, 61, 43, 0.04),
+    0 8px 24px -12px rgba(31, 61, 43, 0.18) !important;
+}
+
+/* ─── Titre (zone .ext-title) ─────────────────────────────────────────────── */
+
+.ext-title {
+  font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif !important;
+  color: #1f3d2b !important;
+  font-size: 1.4rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.2 !important;
+}
+
+/* ─── Éléments génériques ─────────────────────────────────────────────────── */
+
+p {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+  color: #4b5247 !important;
+  font-size: 0.9rem !important;
+}
+
+label {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  color: #1f3d2b !important;
+}
+
+input {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+  background: #f5f1e6 !important;
+  border-radius: 10px !important;
+  color: #1a1a1a !important;
+}
+
+input:focus {
+  background: #ffffff !important;
+  border-color: #5a8f5a !important;
+  outline-color: #5a8f5a !important;
+}
+
+/* ─── Boutons ─────────────────────────────────────────────────────────────── */
+
+button {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+  border-radius: 999px !important;
+}
+
+/* Boutons dans la liste de comptes */
+.ext-sign-in-box button {
+  background: #f3ecdc !important;
+  color: #1a1a1a !important;
+  border-radius: 12px !important;
+}
+
+.ext-sign-in-box button:hover {
+  background: #e8efe0 !important;
+}
+
+/* ─── Liens ───────────────────────────────────────────────────────────────── */
+
+a {
+  color: #2e6b2e !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 3px !important;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+}
+
+a:hover {
+  color: #1f3d2b !important;
+}
+
+/* ─── Footer ──────────────────────────────────────────────────────────────── */
+
+.ext-footer {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+}
+
+.ext-footer-links {
+  font-size: 0.75rem !important;
+  color: #7a827a !important;
+}
+
+.ext-footer-item {
+  color: #7a827a !important;
+  font-size: 0.75rem !important;
+}

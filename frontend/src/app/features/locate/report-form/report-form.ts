@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { AuthService } from '../../../core/auth/auth.service';
 import { CommuneResponse } from '../commune-api';
 import { ReportApi, SubmitReportOutcome } from '../report-api';
 
@@ -21,6 +22,7 @@ export class ReportForm implements OnDestroy {
 
   private readonly fb = inject(FormBuilder);
   private readonly reportApi = inject(ReportApi);
+  private readonly auth = inject(AuthService);
 
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -30,7 +32,6 @@ export class ReportForm implements OnDestroy {
 
   readonly form = this.fb.group({
     description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
-    contactEmail: ['', [Validators.required, Validators.email]],
   });
 
   onPhotoSelected(event: Event): void {
@@ -62,7 +63,7 @@ export class ReportForm implements OnDestroy {
   }
 
   submit(): void {
-    if (this.form.invalid || this.submitting()) return;
+    if (this.submitting()) return;
 
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
@@ -78,7 +79,7 @@ export class ReportForm implements OnDestroy {
           communeInsee: this.commune.codeInsee,
           communeName: this.commune.name,
           description: this.form.value.description!,
-          contactEmail: this.form.value.contactEmail!,
+          contactEmail: this.auth.user()?.email ?? '',
         },
         this.selectedPhoto(),
       )
