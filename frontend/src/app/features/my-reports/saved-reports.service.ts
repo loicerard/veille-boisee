@@ -23,4 +23,8 @@ export class SavedReportsService {
       return [];
     }
   }
+
+  remove(id: string): void {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.getAll().filter((r) => r.id !== id)));
+  }
 }
