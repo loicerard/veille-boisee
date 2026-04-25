@@ -1,8 +1,6 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
-import { InteractionStatus } from '@azure/msal-browser';
-import { filter, take } from 'rxjs';
+import { Injectable, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { AuthService as Auth0Service } from '@auth0/auth0-angular';
 
 export interface CitizenUser {
   userId: string;
@@ -11,44 +9,24 @@ export interface CitizenUser {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly msal = inject(MsalService);
-  private readonly broadcast = inject(MsalBroadcastService);
+  private readonly auth0 = inject(Auth0Service);
 
-  private readonly _user = signal<CitizenUser | null>(null);
-  private readonly _ready = signal(false);
+  private readonly auth0User = toSignal(this.auth0.user$, { initialValue: null });
+  private readonly loading = toSignal(this.auth0.isLoading$, { initialValue: true });
 
-  readonly user = this._user.asReadonly();
-  readonly ready = this._ready.asReadonly();
-  readonly isAuthenticated = computed(() => this._user() !== null);
-
-  constructor() {
-    this.broadcast.inProgress$
-      .pipe(filter(status => status === InteractionStatus.None))
-      .subscribe(() => {
-        this._user.set(this.extractUser());
-        this._ready.set(true);
-      });
-  }
+  readonly ready = computed(() => !this.loading());
+  readonly isAuthenticated = computed(() => this.auth0User() !== null);
+  readonly user = computed<CitizenUser | null>(() => {
+    const u = this.auth0User();
+    if (!u?.sub) return null;
+    return { userId: u.sub, email: u.email ?? '' };
+  });
 
   login(): void {
-    this.msal.loginRedirect({ scopes: [], redirectStartPage: '/' });
+    this.auth0.loginWithRedirect();
   }
 
   logout(): void {
-    this.msal.logoutRedirect();
-  }
-
-  waitUntilReady() {
-    return toObservable(this._ready).pipe(filter(Boolean), take(1));
-  }
-
-  private extractUser(): CitizenUser | null {
-    const accounts = this.msal.instance.getAllAccounts();
-    if (accounts.length === 0) return null;
-    const account = accounts[0];
-    return {
-      userId: account.localAccountId,
-      email: account.username,
-    };
+    this.auth0.logout({ logoutParams: { returnTo: window.location.origin } });
   }
 }

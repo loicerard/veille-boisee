@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web;
 using VeilleBoisee.Application.Reports.Commands;
 using VeilleBoisee.Application.Reports.Queries;
 using VeilleBoisee.Domain.Entities;
@@ -63,7 +62,7 @@ public sealed class ReportsController : ControllerBase
             request.CommuneName,
             request.Description,
             request.ContactEmail,
-            User.GetObjectId(),
+            User.FindFirst("sub")?.Value,
             photoStream,
             photoMimeType);
 
@@ -105,7 +104,7 @@ public sealed class ReportsController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyList<MyReportItem>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMine(CancellationToken cancellationToken)
     {
-        var userId = User.GetObjectId()!;
+        var userId = User.FindFirst("sub")?.Value!;
         var items = await _mediator.Send(new GetMyReportsQuery(userId), cancellationToken);
         return Ok(items);
     }

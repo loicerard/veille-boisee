@@ -1,5 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Identity.Web;
 using Scalar.AspNetCore;
 using Serilog;
 using VeilleBoisee.Api.Middleware;
@@ -15,8 +15,14 @@ builder.Host.UseSerilog((context, configuration) =>
         .Enrich.FromLogContext()
         .WriteTo.Console(new Serilog.Formatting.Json.JsonFormatter()));
 
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+    .AddJwtBearer(options =>
+    {
+        options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}/";
+        options.Audience = builder.Configuration["Auth0:Audience"];
+    });
 
 builder.Services.AddAuthorization(options =>
     options.AddPolicy("IsCitizen", policy => policy

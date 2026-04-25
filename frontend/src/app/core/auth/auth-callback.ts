@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { MsalBroadcastService } from '@azure/msal-angular';
-import { InteractionStatus } from '@azure/msal-browser';
+import { AuthService } from '@auth0/auth0-angular';
 import { filter, take } from 'rxjs';
 
 @Component({
@@ -9,12 +8,13 @@ import { filter, take } from 'rxjs';
   template: `<p>Connexion en cours…</p>`,
 })
 export class AuthCallback implements OnInit {
-  private readonly broadcast = inject(MsalBroadcastService);
+  private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
   ngOnInit(): void {
-    this.broadcast.inProgress$
-      .pipe(filter(status => status === InteractionStatus.None), take(1))
-      .subscribe(() => this.router.navigate(['/']));
+    this.auth.isLoading$.pipe(
+      filter(loading => !loading),
+      take(1)
+    ).subscribe(() => this.router.navigate(['/']));
   }
 }
