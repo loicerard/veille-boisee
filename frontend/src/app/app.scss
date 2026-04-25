@@ -78,16 +78,23 @@
   }
 }
 
+.shell__header-start {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
 .header-back {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  background: transparent;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  background: var(--color-moss-100);
   border: none;
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  font-weight: 500;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px rgba(31, 61, 43, 0.1);
   color: var(--color-forest-700);
   text-decoration: none;
   cursor: pointer;
@@ -96,12 +103,8 @@
     color var(--duration-fast) var(--ease-out);
 
   &:hover {
-    background: rgba(31, 61, 43, 0.06);
+    background: var(--color-moss-200);
     color: var(--color-forest-900);
-  }
-
-  &__label {
-    font-family: var(--font-sans);
   }
 }
 
