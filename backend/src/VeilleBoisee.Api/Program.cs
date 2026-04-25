@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Scalar.AspNetCore;
 using Serilog;
 using VeilleBoisee.Api.Middleware;
+using VeilleBoisee.Api.RateLimiting;
 using VeilleBoisee.Application;
 using VeilleBoisee.Infrastructure;
 using VeilleBoisee.Infrastructure.Persistence;
@@ -35,6 +36,7 @@ builder.Services
     .AddHttpContextAccessor()
     .AddScoped<VeilleBoisee.Api.Auth.CollectiviteContext>();
 
+builder.Services.AddApiRateLimiting(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi(options =>
 {
@@ -90,6 +92,13 @@ else
 
 app.UseCors(FrontendCorsPolicy);
 app.UseAuthentication();
+
+// Placé après UseAuthentication pour avoir accès à l'userId, avant UseAuthorization
+// pour compter aussi les requêtes non-authentifiées sur les endpoints protégés.
+// Désactivé en environnement de test pour ne pas perturber les tests d'intégration.
+if (!app.Environment.IsEnvironment("Test"))
+    app.UseRateLimiter();
+
 app.UseAuthorization();
 app.MapControllers();
 

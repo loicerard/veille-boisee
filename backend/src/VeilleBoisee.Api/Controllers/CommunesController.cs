@@ -1,5 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using VeilleBoisee.Api.RateLimiting;
 using VeilleBoisee.Application.Communes.Queries;
 
 namespace VeilleBoisee.Api.Controllers;
@@ -13,6 +15,7 @@ public sealed class CommunesController : ControllerBase
     public CommunesController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet]
+    [EnableRateLimiting(RateLimitingPolicies.Public)]
     [ProducesResponseType(typeof(CommuneResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

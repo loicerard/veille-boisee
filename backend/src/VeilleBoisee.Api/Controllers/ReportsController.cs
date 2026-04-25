@@ -1,6 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using VeilleBoisee.Api.RateLimiting;
 using VeilleBoisee.Application.Reports.Commands;
 using VeilleBoisee.Application.Reports.Queries;
 using VeilleBoisee.Domain.Entities;
@@ -21,6 +23,7 @@ public sealed class ReportsController : ControllerBase
 
     [HttpPost]
     [Authorize(Policy = "IsCitizen")]
+    [EnableRateLimiting(RateLimitingPolicies.SubmitReport)]
     [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(ReportSubmittedResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -101,6 +104,7 @@ public sealed class ReportsController : ControllerBase
 
     [HttpGet("mine")]
     [Authorize(Policy = "IsCitizen")]
+    [EnableRateLimiting(RateLimitingPolicies.Authenticated)]
     [ProducesResponseType(typeof(IReadOnlyList<MyReportItem>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMine(CancellationToken cancellationToken)
     {
@@ -110,6 +114,7 @@ public sealed class ReportsController : ControllerBase
     }
 
     [HttpGet("{id:guid}/photo")]
+    [EnableRateLimiting(RateLimitingPolicies.Public)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPhoto(Guid id, CancellationToken cancellationToken)
@@ -123,6 +128,7 @@ public sealed class ReportsController : ControllerBase
     }
 
     [HttpGet("{id:guid}/status")]
+    [EnableRateLimiting(RateLimitingPolicies.Public)]
     [ProducesResponseType(typeof(ReportStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetStatus(
