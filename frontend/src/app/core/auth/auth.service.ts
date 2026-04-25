@@ -31,7 +31,7 @@ export class AuthService {
   }
 
   login(): void {
-    this.msal.loginRedirect({ scopes: [] });
+    this.msal.loginRedirect({ scopes: [], redirectStartPage: '/' });
   }
 
   logout(): void {
