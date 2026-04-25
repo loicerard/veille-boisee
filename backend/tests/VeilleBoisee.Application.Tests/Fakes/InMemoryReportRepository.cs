@@ -39,6 +39,15 @@ internal sealed class InMemoryReportRepository : IReportRepository
     public Task<Report?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
         Task.FromResult(_reports.FirstOrDefault(r => r.Id == id));
 
+    public Task<IReadOnlyList<Report>> GetBySubmitterUserIdAsync(string userId, CancellationToken cancellationToken)
+    {
+        var result = (IReadOnlyList<Report>)_reports
+            .Where(r => r.SubmitterUserId == userId)
+            .OrderByDescending(r => r.SubmittedAt)
+            .ToList();
+        return Task.FromResult(result);
+    }
+
     public Task<IReadOnlyList<Report>> GetAllByInseeCodes(
         IReadOnlyList<string> inseeCodes,
         ReportStatus? statusFilter,

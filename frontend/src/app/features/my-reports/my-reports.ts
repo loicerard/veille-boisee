@@ -2,12 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ReportApi, ReportStatus, ReportStatusOutcome } from '../locate/report-api';
-import { SavedReport, SavedReportsService } from './saved-reports.service';
-
-interface DisplayReport extends SavedReport {
-  status: ReportStatus | null;
-}
+import { MyReport, ReportApi, ReportStatus } from '../locate/report-api';
 
 const STATUS_LABELS: Record<ReportStatus, string> = {
   Pending: 'En attente',
@@ -23,29 +18,20 @@ const STATUS_LABELS: Record<ReportStatus, string> = {
   styleUrl: './my-reports.scss',
 })
 export class MyReports implements OnInit {
-  private readonly savedReports = inject(SavedReportsService);
   private readonly reportApi = inject(ReportApi);
 
-  readonly reports = signal<DisplayReport[]>(
-    this.savedReports.getAll().map((r) => ({ ...r, status: null })),
-  );
+  readonly reports = signal<MyReport[]>([]);
+  readonly loading = signal(true);
 
   ngOnInit(): void {
-    this.savedReports.getAll().forEach((report) => {
-      this.reportApi.getStatus(report.id).subscribe((outcome: ReportStatusOutcome) => {
-        if (outcome.kind === 'not-found') {
-          this.savedReports.remove(report.id);
-          this.reports.update((list) => list.filter((r) => r.id !== report.id));
-          return;
-        }
-        const status = outcome.kind === 'found' ? outcome.status : null;
-        this.reports.update((list) => list.map((r) => (r.id === report.id ? { ...r, status } : r)));
-      });
+    this.reportApi.getMyReports().subscribe((reports) => {
+      this.reports.set(reports);
+      this.loading.set(false);
     });
   }
 
-  statusLabel(status: ReportStatus | null): string {
-    return status ? STATUS_LABELS[status] : '…';
+  statusLabel(status: ReportStatus): string {
+    return STATUS_LABELS[status];
   }
 
   shortId(id: string): string {

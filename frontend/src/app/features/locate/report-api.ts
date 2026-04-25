@@ -6,6 +6,13 @@ import { environment } from '../../../environments/environment';
 
 export type ReportStatus = 'Pending' | 'Routed' | 'Acknowledged' | 'Closed';
 
+export interface MyReport {
+  id: string;
+  communeName: string;
+  submittedAt: string;
+  status: ReportStatus;
+}
+
 export type ReportStatusOutcome =
   | { kind: 'found'; status: ReportStatus }
   | { kind: 'not-found' }
@@ -32,6 +39,13 @@ export type SubmitReportOutcome =
 @Injectable({ providedIn: 'root' })
 export class ReportApi {
   private readonly http = inject(HttpClient);
+
+  getMyReports(): Observable<MyReport[]> {
+    const url = `${environment.apiBaseUrl}/api/reports/mine`;
+    return this.http
+      .get<MyReport[]>(url)
+      .pipe(catchError((): Observable<MyReport[]> => of([])));
+  }
 
   getStatus(reportId: string): Observable<ReportStatusOutcome> {
     const url = `${environment.apiBaseUrl}/api/reports/${reportId}/status`;

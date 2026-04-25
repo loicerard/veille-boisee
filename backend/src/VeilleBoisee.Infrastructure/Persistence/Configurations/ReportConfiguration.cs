@@ -24,10 +24,14 @@ internal sealed class ReportConfiguration : IEntityTypeConfiguration<Report>
 
         builder.Property(r => r.PhotoMimeType).HasMaxLength(50);
 
+        // Azure AD Object ID — GUID with hyphens = 36 chars
+        builder.Property(r => r.SubmitterUserId).HasMaxLength(36);
+
         builder.HasIndex(r => r.CommuneInsee);
         builder.HasIndex(r => r.SubmittedAt);
         builder.HasIndex(r => new { r.CommuneInsee, r.SubmittedAt });
         builder.HasIndex(r => new { r.CommuneInsee, r.Status });
+        builder.HasIndex(r => r.SubmitterUserId);
 
         builder.HasQueryFilter(r => r.DeletedAt == null);
     }

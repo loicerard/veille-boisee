@@ -84,11 +84,17 @@ namespace VeilleBoisee.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("SubmittedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("SubmitterUserId")
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CommuneInsee");
 
                     b.HasIndex("SubmittedAt");
+
+                    b.HasIndex("SubmitterUserId");
 
                     b.HasIndex("CommuneInsee", "Status");
 
