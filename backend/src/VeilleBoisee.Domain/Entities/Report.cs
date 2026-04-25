@@ -31,12 +31,15 @@ public sealed class Report
     public byte[]? PhotoData { get; private set; }
     public string? PhotoMimeType { get; private set; }
 
+    public string? SubmitterUserId { get; private set; }
+
     public static Report Create(
         Coordinates location,
         CodeInsee communeInsee,
         string communeName,
         string description,
         string encryptedContactEmail,
+        string? submitterUserId = null,
         byte[]? photoData = null,
         string? photoMimeType = null)
     {
@@ -55,6 +58,7 @@ public sealed class Report
             EncryptedContactEmail = encryptedContactEmail,
             Status = ReportStatus.Pending,
             SubmittedAt = DateTimeOffset.UtcNow,
+            SubmitterUserId = submitterUserId,
             PhotoData = photoData,
             PhotoMimeType = photoMimeType
         };

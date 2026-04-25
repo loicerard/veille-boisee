@@ -13,6 +13,7 @@ public sealed record SubmitReportCommand(
     string CommuneName,
     string Description,
     string ContactEmail,
+    string? SubmitterUserId = null,
     Stream? PhotoStream = null,
     string? PhotoMimeType = null
 ) : IRequest<Result<Guid, SubmitReportError>>;
@@ -78,6 +79,7 @@ internal sealed class SubmitReportHandler
             request.CommuneName,
             request.Description,
             encryptedEmail,
+            request.SubmitterUserId,
             photoData,
             request.PhotoMimeType);
 

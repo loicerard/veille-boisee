@@ -21,6 +21,7 @@ export const routes: Routes = [
   },
   {
     path: 'mes-signalements',
+    canActivate: [citizenGuard],
     loadComponent: () => import('./features/my-reports/my-reports').then((m) => m.MyReports),
   },
   {

@@ -1,6 +1,5 @@
 import { Component, ViewChild, inject, signal } from '@angular/core';
 
-import { SavedReportsService } from '../../my-reports/saved-reports.service';
 import { CommuneApi, CommuneLookupOutcome, CommuneResponse } from '../commune-api';
 import { MapPicker, PickedCoordinates } from '../map-picker/map-picker';
 import { ReportForm } from '../report-form/report-form';
@@ -26,7 +25,6 @@ export class Locate {
   @ViewChild(MapPicker) private readonly mapPicker!: MapPicker;
 
   private readonly communeApi = inject(CommuneApi);
-  private readonly savedReports = inject(SavedReportsService);
 
   readonly state = signal<ViewState>({ kind: 'idle' });
 
@@ -71,14 +69,6 @@ export class Locate {
   }
 
   onReportSubmitted(reportId: string): void {
-    const s = this.state();
-    if (s.kind === 'reporting') {
-      this.savedReports.save({
-        id: reportId,
-        communeName: s.commune.name,
-        submittedAt: new Date().toISOString(),
-      });
-    }
     this.state.set({ kind: 'submitted', reportId });
   }
 

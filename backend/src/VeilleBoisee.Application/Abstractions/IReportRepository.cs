@@ -19,6 +19,8 @@ public interface IReportRepository
 
     Task<Report?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
+    Task<IReadOnlyList<Report>> GetBySubmitterUserIdAsync(string userId, CancellationToken cancellationToken);
+
     Task<IReadOnlyList<Report>> GetAllByInseeCodes(
         IReadOnlyList<string> inseeCodes,
         ReportStatus? statusFilter,

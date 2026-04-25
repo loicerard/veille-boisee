@@ -11,7 +11,11 @@
     </a>
   </header>
 
-  @if (reports().length === 0) {
+  @if (loading()) {
+    <div class="placeholder">
+      <p class="placeholder__lead">Chargement…</p>
+    </div>
+  } @else if (reports().length === 0) {
     <section class="placeholder">
       <div class="placeholder__illustration" aria-hidden="true">
         <svg viewBox="0 0 64 64" width="64" height="64">
@@ -55,7 +59,7 @@
               · <span class="report-card__ref">Réf. {{ shortId(report.id) }}</span>
             </span>
           </div>
-          <span class="report-card__badge report-card__badge--{{ (report.status ?? 'pending').toLowerCase() }}">
+          <span class="report-card__badge report-card__badge--{{ report.status.toLowerCase() }}">
             {{ statusLabel(report.status) }}
           </span>
         </li>

@@ -48,6 +48,14 @@ internal sealed class ReportRepository : IReportRepository
     public Task<Report?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
         _context.Reports.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
+    public async Task<IReadOnlyList<Report>> GetBySubmitterUserIdAsync(
+        string userId,
+        CancellationToken cancellationToken) =>
+        await _context.Reports
+            .Where(r => r.SubmitterUserId == userId)
+            .OrderByDescending(r => r.SubmittedAt)
+            .ToListAsync(cancellationToken);
+
     public async Task<IReadOnlyList<Report>> GetAllByInseeCodes(
         IReadOnlyList<string> inseeCodes,
         ReportStatus? statusFilter,
