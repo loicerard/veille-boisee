@@ -120,7 +120,7 @@
 
 .status {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-3);
   padding: var(--space-4);
   border-radius: var(--radius-md);
@@ -135,6 +135,7 @@
     border-right-color: transparent;
     animation: spin 0.7s linear infinite;
     flex-shrink: 0;
+    margin-top: 2px;
   }
 
   &__icon {
@@ -153,6 +154,18 @@
 
   & > span:last-child {
     color: var(--color-ink-900);
+    margin-top: 1px;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+
+    p {
+      margin: 0;
+      color: var(--color-ink-900);
+    }
   }
 
   &--loading {

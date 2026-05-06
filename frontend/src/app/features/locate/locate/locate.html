@@ -57,7 +57,15 @@
       @case ('geolocationDenied') {
         <div class="status status--warning">
           <span class="status__icon" aria-hidden="true">!</span>
-          <span>Accès à la position refusé. Autorisez-la dans les paramètres du navigateur.</span>
+          <div class="status__body">
+            <p>L'accès à la position a été refusé.</p>
+            @if (isStandalonePwa) {
+              <p>Ouvrez les <strong>Paramètres</strong> de votre téléphone, puis allez dans <strong>Applications</strong>, cherchez l'application, et autorisez la <strong>Localisation</strong>.</p>
+            } @else {
+              <p>Appuyez sur l'icône de cadenas dans la barre d'adresse, puis autorisez la <strong>Localisation</strong> pour ce site.</p>
+            }
+            <button type="button" class="btn btn--secondary" (click)="useCurrentPosition()">Réessayer</button>
+          </div>
         </div>
       }
       @case ('geolocationInsecureContext') {
