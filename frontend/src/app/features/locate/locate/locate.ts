@@ -27,6 +27,7 @@ export class Locate {
   private readonly communeApi = inject(CommuneApi);
 
   readonly state = signal<ViewState>({ kind: 'idle' });
+  readonly isStandalonePwa = window.matchMedia('(display-mode: standalone)').matches;
 
   onCoordinatesPicked(coords: PickedCoordinates): void {
     this.queryCommune(coords.latitude, coords.longitude);
@@ -43,6 +44,23 @@ export class Locate {
       return;
     }
 
+    if (navigator.permissions) {
+      navigator.permissions
+        .query({ name: 'geolocation' })
+        .then((permissionStatus) => {
+          if (permissionStatus.state === 'denied') {
+            this.state.set({ kind: 'geolocationDenied' });
+          } else {
+            this.requestPosition();
+          }
+        })
+        .catch(() => this.requestPosition());
+    } else {
+      this.requestPosition();
+    }
+  }
+
+  private requestPosition(): void {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
